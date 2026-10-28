@@ -33,6 +33,24 @@ create table if not exists public.menu_items (
   updated_at timestamptz not null default now()
 );
 
+alter table public.menu_items
+  add column if not exists category text not null default '其他';
+
+-- Give existing menu items a useful initial category; admins can edit these later.
+update public.menu_items m
+set category = case
+  when m.name ~ '(茶|奶茶|飲|檸|珍珠|烏龍|冬瓜)' then '飲品'
+  when m.name ~ '(麵|粉|米線)' then '麵食'
+  when m.name ~ '(飯|便當|丼)' then '飯類'
+  when m.name ~ '(布丁|奶酪|甜|楊枝|蛋糕)' then '甜品'
+  when m.name ~ '(雞翼|香腸|燒賣|魚蛋|小食)' then '小食'
+  when r.category = '茶飲' then '飲品'
+  else coalesce(r.category, '其他')
+end
+from public.restaurants r
+where m.restaurant_id = r.id
+  and m.category = '其他';
+
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   public_code text not null unique,
