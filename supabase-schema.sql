@@ -216,6 +216,7 @@ on conflict (order_id) do update set
   status = excluded.status,
   updated_at = excluded.updated_at;
 
+-- Realtime is required for the customer app to receive status updates.
 -- ============================================================
 -- Courier backend migration
 -- Run this section after the original schema above.
@@ -279,31 +280,37 @@ create index if not exists orders_assigned_courier_idx
 on public.orders(assigned_courier_id);
 
 -- Replace the original broad authenticated policies with role-aware policies.
+drop policy if exists "Admins can manage payment settings" on public.payment_settings;
 drop policy if exists "Authenticated admins can manage payment settings" on public.payment_settings;
 create policy "Admins can manage payment settings" on public.payment_settings
 for all to authenticated
 using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "Admins can manage restaurants" on public.restaurants;
 drop policy if exists "Authenticated admins can manage restaurants" on public.restaurants;
 create policy "Admins can manage restaurants" on public.restaurants
 for all to authenticated
 using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "Admins can manage menu items" on public.menu_items;
 drop policy if exists "Authenticated admins can manage menu items" on public.menu_items;
 create policy "Admins can manage menu items" on public.menu_items
 for all to authenticated
 using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "Admins can manage orders" on public.orders;
 drop policy if exists "Authenticated admins can manage orders" on public.orders;
 create policy "Admins can manage orders" on public.orders
 for all to authenticated
 using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "Admins can manage order items" on public.order_items;
 drop policy if exists "Authenticated admins can manage order items" on public.order_items;
 create policy "Admins can manage order items" on public.order_items
 for all to authenticated
 using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "Admins can manage order tracking" on public.order_tracking;
 drop policy if exists "Authenticated admins can manage order tracking" on public.order_tracking;
 create policy "Admins can manage order tracking" on public.order_tracking
 for all to authenticated
