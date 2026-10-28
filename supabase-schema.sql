@@ -51,6 +51,26 @@ from public.restaurants r
 where m.restaurant_id = r.id
   and m.category = '其他';
 
+create table if not exists public.payment_settings (
+  id text primary key default 'default',
+  alipay_qr_url text,
+  wechat_qr_url text,
+  fps_phone text,
+  account_name text,
+  active boolean not null default true,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.payment_settings enable row level security;
+
+drop policy if exists "Public can read active payment settings" on public.payment_settings;
+create policy "Public can read active payment settings" on public.payment_settings
+for select to anon, authenticated using (active = true);
+
+drop policy if exists "Authenticated admins can manage payment settings" on public.payment_settings;
+create policy "Authenticated admins can manage payment settings" on public.payment_settings
+for all to authenticated using (true) with check (true);
+
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   public_code text not null unique,
