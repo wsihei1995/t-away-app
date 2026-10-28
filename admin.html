@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10231d" />
+  <title>T-AWAY 後台管理</title>
+  <style>
+    :root { --ink:#10231d; --muted:#718078; --paper:#f7f8f3; --card:#fff; --line:#e3e9e3; --lime:#bbf05d; --mint:#d8f1db; --orange:#ef7d50; --red:#d9584c; --shadow:0 16px 38px rgba(18,45,34,.10); }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font-family:-apple-system,BlinkMacSystemFont,"PingFang HK","PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif; -webkit-font-smoothing:antialiased; }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; border:0; }
+    .page { max-width:1000px; margin:0 auto; padding:0 20px 60px; }
+    .login { min-height:100vh; display:grid; place-items:center; padding:24px; }
+    .login-card { width:min(420px,100%); padding:32px 26px; border-radius:28px; background:#fff; box-shadow:var(--shadow); border:1px solid var(--line); text-align:center; }
+    .logo { width:60px; height:60px; display:grid; place-items:center; margin:0 auto 18px; border-radius:19px; background:var(--ink); color:var(--lime); font-size:30px; box-shadow:6px 6px 0 #d8ebd8; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { margin-bottom:8px; font-size:26px; letter-spacing:-.06em; }
+    .login-card p { color:var(--muted); font-size:13px; line-height:1.65; margin-bottom:23px; }
+    .pin-input { width:100%; height:52px; padding:0 15px; border:1px solid var(--line); border-radius:14px; outline:0; text-align:center; letter-spacing:.3em; font-size:20px; }
+    .pin-input:focus,.field input:focus,.field textarea:focus,.field select:focus { border-color:var(--ink); box-shadow:0 0 0 3px rgba(187,240,93,.35); }
+    .primary { width:100%; padding:14px 18px; margin-top:13px; border-radius:13px; color:var(--ink); background:var(--lime); font-weight:900; }
+    .ghost { padding:10px 14px; border-radius:11px; color:var(--ink); background:#eef3ed; font-size:12px; font-weight:800; }
+    .danger { color:var(--red); background:#fff0ed; }
+    .topbar { height:76px; display:flex; align-items:center; justify-content:space-between; gap:14px; position:sticky; top:0; z-index:5; background:rgba(247,248,243,.90); backdrop-filter:blur(18px); }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-mark { width:40px; height:40px; display:grid; place-items:center; color:var(--lime); background:var(--ink); border-radius:13px; font-size:21px; }
+    .brand strong { display:block; font-size:17px; letter-spacing:-.04em; }
+    .brand small { display:block; margin-top:3px; color:var(--orange); font-size:9px; font-weight:900; letter-spacing:.13em; }
+    .header-actions { display:flex; align-items:center; gap:8px; }
+    .avatar { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; color:var(--ink); background:var(--mint); font-size:15px; font-weight:900; }
+    .welcome { display:flex; align-items:end; justify-content:space-between; gap:15px; margin:15px 0 22px; }
+    .welcome h1 { margin:0; font-size:32px; }
+    .welcome p { margin:8px 0 0; color:var(--muted); font-size:13px; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:25px; }
+    .stat { padding:17px; border:1px solid var(--line); border-radius:17px; background:var(--card); }
+    .stat small { color:var(--muted); font-size:11px; font-weight:800; }
+    .stat strong { display:block; margin-top:6px; font-size:25px; letter-spacing:-.06em; }
+    .section-card { padding:20px; border:1px solid var(--line); border-radius:22px; background:var(--card); box-shadow:0 7px 20px rgba(18,45,34,.03); }
+    .section-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:17px; }
+    .section-header h2 { margin:0; font-size:20px; letter-spacing:-.05em; }
+    .search { width:180px; max-width:45%; height:40px; padding:0 12px; border:1px solid var(--line); border-radius:11px; outline:0; font-size:12px; }
+    .restaurant-list { display:grid; gap:10px; }
+    .restaurant-row { display:flex; align-items:center; gap:13px; padding:13px; border:1px solid var(--line); border-radius:15px; background:#fff; }
+    .restaurant-icon { width:52px; height:52px; flex:0 0 auto; display:grid; place-items:center; border-radius:13px; background:var(--mint); font-size:28px; }
+    .restaurant-info { min-width:0; flex:1; }
+    .restaurant-info strong { display:block; font-size:14px; }
+    .restaurant-info span { display:block; margin-top:5px; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .restaurant-state { padding:5px 8px; border-radius:7px; color:#447052; background:#edf7ed; font-size:10px; font-weight:900; }
+    .restaurant-state.off { color:#9a5c53; background:#fff0ed; }
+    .row-actions { display:flex; gap:6px; }
+    .row-actions button { width:33px; height:33px; border-radius:10px; color:var(--ink); background:#eef3ed; font-size:15px; }
+    .row-actions button:last-child { color:var(--red); background:#fff0ed; }
+    .editor { margin-top:20px; display:none; }
+    .editor.open { display:block; }
+    .editor-title { display:flex; align-items:start; justify-content:space-between; gap:12px; margin-bottom:19px; }
+    .editor-title h2 { margin:0; font-size:21px; letter-spacing:-.05em; }
+    .editor-title p { margin:6px 0 0; color:var(--muted); font-size:12px; }
+    .form-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:13px; }
+    .field { display:grid; gap:6px; }
+    .field.full { grid-column:1/-1; }
+    .field label { color:var(--muted); font-size:11px; font-weight:900; }
+    .field input,.field select,.field textarea { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:11px; outline:0; color:var(--ink); background:#fff; font-size:13px; }
+    .field textarea { min-height:68px; resize:vertical; }
+    .switch-field { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border:1px solid var(--line); border-radius:11px; }
+    .switch-field label { color:var(--ink); }
+    .switch { position:relative; width:43px; height:25px; }
+    .switch input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; inset:0; border-radius:99px; background:#dfe7df; transition:.2s; cursor:pointer; }
+    .slider:before { content:""; position:absolute; width:19px; height:19px; left:3px; top:3px; border-radius:50%; background:white; transition:.2s; box-shadow:0 2px 5px rgba(0,0,0,.16); }
+    .switch input:checked + .slider { background:var(--lime); }
+    .switch input:checked + .slider:before { transform:translateX(18px); }
+    .menu-editor { margin-top:22px; padding-top:20px; border-top:1px solid var(--line); }
+    .menu-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:11px; }
+    .menu-heading strong { font-size:15px; }
+    .menu-items { display:grid; gap:9px; }
+    .menu-row { display:grid; grid-template-columns:42px 1fr 82px 34px; gap:7px; align-items:center; }
+    .menu-row input { width:100%; height:38px; padding:0 8px; border:1px solid var(--line); border-radius:9px; outline:0; color:var(--ink); font-size:11px; }
+    .menu-row input:first-child { text-align:center; font-size:19px; }
+    .remove-menu { width:34px; height:34px; border-radius:9px; color:var(--red); background:#fff0ed; font-weight:900; }
+    .editor-actions { display:flex; gap:9px; margin-top:22px; }
+    .editor-actions button { flex:1; padding:13px; border-radius:12px; font-size:13px; font-weight:900; }
+    .save-btn { color:var(--ink); background:var(--lime); }
+    .cancel-btn { color:var(--ink); background:#eef3ed; }
+    .notice { margin-top:22px; padding:14px 15px; color:#4a6b56; background:var(--mint); border-radius:14px; font-size:11px; line-height:1.6; }
+    .empty { padding:35px 15px; border:1px dashed var(--line); border-radius:14px; color:var(--muted); text-align:center; font-size:13px; }
+    .toast { position:fixed; z-index:20; left:50%; bottom:24px; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:12px 16px; border-radius:12px; color:#fff; background:var(--ink); font-size:12px; transition:.25s; box-shadow:var(--shadow); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media(max-width:620px) {
+      .page { padding:0 14px 45px; }
+      .topbar { height:67px; }
+      .header-actions .ghost { display:none; }
+      .welcome { align-items:start; flex-direction:column; margin-top:16px; }
+      .welcome h1 { font-size:28px; }
+      .stats { gap:8px; }
+      .stat { padding:13px 11px; }
+      .stat strong { font-size:21px; }
+      .section-card { padding:15px; border-radius:18px; }
+      .section-header { align-items:start; flex-direction:column; }
+      .search { width:100%; max-width:none; }
+      .restaurant-row { padding:10px; gap:9px; }
+      .restaurant-icon { width:45px; height:45px; font-size:23px; }
+      .restaurant-state { display:none; }
+      .row-actions button { width:31px; height:31px; }
+      .form-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .menu-row { grid-template-columns:38px 1fr 62px 31px; gap:5px; }
+      .menu-row input { font-size:10px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginView" class="login">
+    <section class="login-card">
+      <div class="logo">🚲</div>
+      <h1>T-AWAY 後台管理</h1>
+      <p>管理你的天水圍餐廳及菜單<br>示範登入 PIN：<strong>8888</strong></p>
+      <input id="pinInput" class="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="輸入 4 位 PIN" onkeydown="if(event.key==='Enter') login()" />
+      <button class="primary" onclick="login()">登入後台</button>
+      <div id="loginError" style="display:none;margin-top:12px;color:var(--red);font-size:12px">PIN 不正確，請再試一次。</div>
+    </section>
+  </div>
+
+  <div id="adminView" style="display:none">
+    <main class="page">
+      <header class="topbar">
+        <div class="brand"><div class="brand-mark">🚲</div><div><strong>天水圍人車隊</strong><small>T-AWAY · 後台管理</small></div></div>
+        <div class="header-actions"><button class="ghost" onclick="openCustomerApp()">查看前台 ↗</button><div class="avatar">管</div><button class="ghost" onclick="logout()">登出</button></div>
+      </header>
+
+      <section class="welcome"><div><h1>早晨，管理員 👋</h1><p>自己更新附近小店，前台重新整理後就會同步。</p></div><button class="primary" style="width:auto;margin:0;padding:12px 16px" onclick="newRestaurant()">＋ 新增餐廳</button></section>
+
+      <section class="stats"><div class="stat"><small>餐廳總數</small><strong id="statRestaurants">0</strong></div><div class="stat"><small>營業中</small><strong id="statActive">0</strong></div><div class="stat"><small>菜單餐點</small><strong id="statDishes">0</strong></div></section>
+
+      <section class="section-card">
+        <div class="section-header"><h2>餐廳管理</h2><input id="adminSearch" class="search" type="search" placeholder="搜尋餐廳或地區" oninput="renderList()" /></div>
+        <div id="restaurantList" class="restaurant-list"></div>
+      </section>
+
+      <section id="editor" class="section-card editor">
+        <div class="editor-title"><div><h2 id="editorHeading">新增餐廳</h2><p>資料儲存後，前台刷新頁面即可看到更新。</p></div><button class="ghost" onclick="closeEditor()">× 關閉</button></div>
+        <div class="form-grid">
+          <div class="field"><label>餐廳名稱 *</label><input id="fName" placeholder="例如：天水圍茶記" /></div>
+          <div class="field"><label>分類 *</label><select id="fCategory"><option>飯類</option><option>麵食</option><option>茶飲</option><option>小食</option><option>甜品</option></select></div>
+          <div class="field"><label>地區／屋苑</label><input id="fArea" placeholder="例如：天盛苑" /></div>
+          <div class="field"><label>送餐時間</label><input id="fTime" placeholder="例如：20–30 分鐘" /></div>
+          <div class="field"><label>配送費</label><input id="fFee" placeholder="例如：$8 起" /></div>
+          <div class="field"><label>評分</label><input id="fRating" placeholder="例如：4.8" /></div>
+          <div class="field"><label>評價數量</label><input id="fReviews" type="number" min="0" placeholder="例如：128" /></div>
+          <div class="field"><label>封面食物 Emoji</label><input id="fEmoji" placeholder="例如：🍜" /></div>
+          <div class="field"><label>卡片標籤</label><input id="fLabel" placeholder="例如：街坊推介" /></div>
+          <div class="field"><label>標籤（用逗號分隔）</label><input id="fTags" placeholder="例如：宵夜之選, 可加餸" /></div>
+          <div class="field full"><div class="switch-field"><label><strong>餐廳目前上架</strong><br><span style="color:var(--muted);font-size:11px;font-weight:500">關閉後，客人前台不會顯示</span></label><label class="switch"><input id="fActive" type="checkbox" checked /><span class="slider"></span></label></div></div>
+        </div>
+        <div class="menu-editor"><div class="menu-heading"><strong>菜單餐點</strong><button class="ghost" onclick="addMenuRow()">＋ 加餐點</button></div><div id="menuItems" class="menu-items"></div></div>
+        <div class="editor-actions"><button class="cancel-btn" onclick="closeEditor()">取消</button><button class="save-btn" onclick="saveRestaurant()">儲存餐廳資料</button></div>
+      </section>
+      <div class="notice">目前這個版本是可操作示範版：資料會儲存在這部手機的瀏覽器中。正式上線時可以再接雲端資料庫，讓你在任何手機／電腦登入都能管理。</div>
+      <section class="section-card payment-settings-card">
+        <div class="section-header"><div><h2>付款設定</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">先填好商戶資料，正式接通支付接口時可以直接使用。</p></div><span class="restaurant-state">示範版</span></div>
+        <div class="form-grid">
+          <div class="field"><label>支付寶商戶識別／備註</label><input id="pAlipay" placeholder="例如：你的 AlipayHK 商戶資料" /></div>
+          <div class="field"><label>微信支付商戶識別／備註</label><input id="pWechat" placeholder="例如：你的 WeChat Pay 商戶資料" /></div>
+          <div class="field"><label>轉數快 FPS 收款識別碼</label><input id="pFps" placeholder="例如：手機號碼／FPS ID" /></div>
+          <div class="field"><label>收款戶口名稱</label><input id="pName" placeholder="例如：天水圍人車隊 T-AWAY" /></div>
+        </div>
+        <button class="primary" style="width:auto;margin-top:16px" onclick="savePaymentSettings()">儲存付款設定</button>
+      </section>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'taway_restaurants_v1';
+    const PAYMENT_SETTINGS_KEY = 'taway_payment_settings_v1';
+    const seed = [
+      { id: 1, name: '阿婆車仔麵', category: '麵食', area: '天瑞邨', time: '20–30 分鐘', fee: '$12 起', rating: '4.9', reviews: '328', cover: 'green', emoji: '🍜', label: '街坊推介', tags: ['宵夜之選','可加餸'], active: true, menu: [{name:'秘製牛腩車仔麵',desc:'蘿蔔 · 魚蛋 · 豬皮',price:42,emoji:'🍜'},{name:'雙拼車仔麵',desc:'腸仔 · 魚蛋 · 豆卜',price:38,emoji:'🍲'},{name:'凍檸茶',desc:'少甜 · 少冰',price:16,emoji:'🍋'}] },
+      { id: 2, name: '禾田便當', category: '飯類', area: '天耀邨', time: '25–35 分鐘', fee: '$8 起', rating: '4.8', reviews: '216', cover: 'peach', emoji: '🍱', label: '午市熱賣', tags: ['足料實惠','少油健康'], active: true, menu: [{name:'照燒雞扒便當',desc:'溏心蛋 · 西蘭花 · 白飯',price:58,emoji:'🍱'},{name:'台式鹽酥雞飯',desc:'酸菜 · 滷蛋 · 白飯',price:55,emoji:'🍗'},{name:'台式冬瓜茶',desc:'500ml · 甜度固定',price:18,emoji:'🧋'}] },
+      { id: 3, name: '茶日子', category: '茶飲', area: '天盛苑', time: '15–25 分鐘', fee: '$6 起', rating: '4.7', reviews: '189', cover: 'yellow', emoji: '🧋', label: '新店登場', tags: ['買一送一','台式茶飲'], active: true, menu: [{name:'黑糖珍珠鮮奶',desc:'黑糖 · 珍珠 · 鮮奶',price:28,emoji:'🧋'},{name:'桂花烏龍茶',desc:'700ml · 微甜',price:24,emoji:'🍵'},{name:'芋泥奶酪',desc:'每日新鮮製作',price:32,emoji:'🍮'}] },
+      { id: 4, name: '鄰里燒味飯店', category: '飯類', area: '天恒邨', time: '30–40 分鐘', fee: '$10 起', rating: '4.6', reviews: '154', cover: 'blue', emoji: '🍖', label: '老字號', tags: ['即叫即燒','大份量'], active: true, menu: [{name:'蜜汁叉燒燒肉飯',desc:'雙拼 · 菜心 · 白飯',price:62,emoji:'🍖'},{name:'脆皮燒鵝飯',desc:'例湯 · 菜心 · 白飯',price:68,emoji:'🍗'},{name:'凍檸茶',desc:'少甜 · 少冰',price:16,emoji:'🍋'}] },
+      { id: 5, name: '小島甜室', category: '甜品', area: '濕地公園', time: '20–30 分鐘', fee: '$8 起', rating: '4.9', reviews: '97', cover: 'pink', emoji: '🍮', label: '人氣甜品', tags: ['手工製作','下午茶'], active: true, menu: [{name:'海鹽焦糖布丁',desc:'滑嫩 · 每日限量',price:32,emoji:'🍮'},{name:'芒芒楊枝甘露',desc:'芒果 · 西米 · 椰奶',price:38,emoji:'🥭'},{name:'伯爵奶茶',desc:'鮮奶 · 伯爵茶',price:26,emoji:'🫖'}] },
+      { id: 6, name: '串門小食部', category: '小食', area: '天華邨', time: '18–28 分鐘', fee: '$7 起', rating: '4.8', reviews: '243', cover: 'lilac', emoji: '🍢', label: '下酒小食', tags: ['多人分享','即叫即炸'], active: true, menu: [{name:'招牌雞翼拼盤',desc:'原味 · 椒鹽 · 6隻',price:45,emoji:'🍗'},{name:'台灣大香腸',desc:'蒜片 · 九層塔',price:26,emoji:'🌭'},{name:'炸燒賣拼盤',desc:'魚蛋 · 燒賣 · 魚腐',price:35,emoji:'🍢'}] }
+    ];
+    let restaurants = [];
+    let editingId = null;
+
+    function getData() {
+      try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); return Array.isArray(saved) && saved.length ? saved : seed.map(r => ({...r, menu:r.menu.map(i=>({...i}))})); }
+      catch (e) { return seed.map(r => ({...r, menu:r.menu.map(i=>({...i}))})); }
+    }
+    function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(restaurants)); }
+    function login() {
+      const pin = document.getElementById('pinInput').value;
+      if (pin !== '8888') { document.getElementById('loginError').style.display='block'; return; }
+      document.getElementById('loginView').style.display='none'; document.getElementById('adminView').style.display='block'; restaurants = getData(); renderAll(); loadPaymentSettings();
+    }
+    function logout() { document.getElementById('adminView').style.display='none'; document.getElementById('loginView').style.display='grid'; document.getElementById('pinInput').value=''; }
+    function renderAll() { updateStats(); renderList(); }
+    function loadPaymentSettings() {
+      let settings = {};
+      try { settings = JSON.parse(localStorage.getItem(PAYMENT_SETTINGS_KEY) || '{}'); } catch (e) {}
+      document.getElementById('pAlipay').value = settings.alipay || '';
+      document.getElementById('pWechat').value = settings.wechat || '';
+      document.getElementById('pFps').value = settings.fps || '';
+      document.getElementById('pName').value = settings.name || '';
+    }
+    function savePaymentSettings() {
+      localStorage.setItem(PAYMENT_SETTINGS_KEY, JSON.stringify({ alipay:document.getElementById('pAlipay').value.trim(), wechat:document.getElementById('pWechat').value.trim(), fps:document.getElementById('pFps').value.trim(), name:document.getElementById('pName').value.trim() }));
+      showToast('付款設定已儲存');
+    }
+    function updateStats() { document.getElementById('statRestaurants').textContent=restaurants.length; document.getElementById('statActive').textContent=restaurants.filter(r=>r.active!==false).length; document.getElementById('statDishes').textContent=restaurants.reduce((n,r)=>n+(r.menu?.length||0),0); }
+    function renderList() {
+      const q = document.getElementById('adminSearch').value.trim().toLowerCase();
+      const list = restaurants.filter(r => !q || `${r.name}${r.area}${r.category}`.toLowerCase().includes(q));
+      const box = document.getElementById('restaurantList');
+      if (!list.length) { box.innerHTML='<div class="empty">搵唔到相關餐廳。</div>'; return; }
+      box.innerHTML = list.map(r => `<div class="restaurant-row"><div class="restaurant-icon">${r.emoji||'🍽️'}</div><div class="restaurant-info"><strong>${escapeHtml(r.name||'未命名餐廳')}</strong><span>${escapeHtml(r.category||'未分類')} · ${escapeHtml(r.area||'未填地區')} · ${r.menu?.length||0} 個餐點</span></div><span class="restaurant-state ${r.active===false?'off':''}">${r.active===false?'已下架':'營業中'}</span><div class="row-actions"><button title="編輯" onclick="editRestaurant(${r.id})">✎</button><button title="刪除" onclick="deleteRestaurant(${r.id})">×</button></div></div>`).join('');
+    }
+    function escapeHtml(value) { return String(value??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+    function newRestaurant() { editingId=null; document.getElementById('editorHeading').textContent='新增餐廳'; fillForm({name:'',category:'飯類',area:'',time:'20–30 分鐘',fee:'$8 起',rating:'5.0',reviews:'0',emoji:'🍽️',label:'街坊新店',tags:[],active:true,menu:[{name:'招牌餐點',desc:'請填寫餐點介紹',price:0,emoji:'🍽️'}]}); openEditor(); }
+    function editRestaurant(id) { const r=restaurants.find(x=>x.id===id); if(!r)return; editingId=id; document.getElementById('editorHeading').textContent='編輯餐廳'; fillForm(r); openEditor(); }
+    function openEditor() { document.getElementById('editor').classList.add('open'); document.getElementById('editor').scrollIntoView({behavior:'smooth',block:'start'}); }
+    function closeEditor() { document.getElementById('editor').classList.remove('open'); editingId=null; }
+    function fillForm(r) { ['Name','Area','Time','Fee','Rating','Reviews','Emoji','Label','Tags'].forEach(k=>document.getElementById('f'+k).value=Array.isArray(r.tags)&&k==='Tags'?r.tags.join(', '):(r[k.toLowerCase()]??'')); document.getElementById('fCategory').value=r.category||'飯類'; document.getElementById('fActive').checked=r.active!==false; document.getElementById('menuItems').innerHTML=''; (r.menu||[]).forEach(addMenuRow); }
+    function addMenuRow(item={name:'',desc:'',price:0,emoji:'🍽️'}) { const row=document.createElement('div'); row.className='menu-row'; row.innerHTML=`<input class="m-emoji" value="${escapeHtml(item.emoji)}" aria-label="餐點圖示"><input class="m-name" placeholder="餐點名稱" value="${escapeHtml(item.name)}"><input class="m-price" type="number" min="0" placeholder="價格" value="${Number(item.price)||0}"><button class="remove-menu" onclick="this.parentElement.remove()">×</button><input class="m-desc" style="grid-column:2/4" placeholder="餐點介紹" value="${escapeHtml(item.desc)}">`; document.getElementById('menuItems').appendChild(row); }
+    function formValue(id) { return document.getElementById(id).value.trim(); }
+    function saveRestaurant() {
+      const name=formValue('fName'); if(!name){ showToast('請先填寫餐廳名稱'); return; }
+      const rows=[...document.querySelectorAll('.menu-row')];
+      const item={id:editingId||Date.now(),name,category:document.getElementById('fCategory').value,area:formValue('fArea'),time:formValue('fTime'),fee:formValue('fFee'),rating:formValue('fRating')||'5.0',reviews:formValue('fReviews')||'0',cover:['green','peach','yellow','blue','pink','lilac'][Math.floor(Math.random()*6)],emoji:formValue('fEmoji')||'🍽️',label:formValue('fLabel')||'街坊推介',tags:formValue('fTags').split(',').map(x=>x.trim()).filter(Boolean),active:document.getElementById('fActive').checked,menu:rows.map(row=>({emoji:row.querySelector('.m-emoji').value.trim()||'🍽️',name:row.querySelector('.m-name').value.trim()||'未命名餐點',desc:row.querySelector('.m-desc').value.trim(),price:Number(row.querySelector('.m-price').value)||0}))};
+      if(editingId){ const index=restaurants.findIndex(r=>r.id===editingId); if(index>=0) restaurants[index]=item; } else restaurants.push(item);
+      persist(); renderAll(); closeEditor(); showToast('資料已儲存，前台刷新後會同步');
+    }
+    function deleteRestaurant(id) { const r=restaurants.find(x=>x.id===id); if(!r||!confirm(`確定刪除「${r.name}」？`))return; restaurants=restaurants.filter(x=>x.id!==id); persist(); renderAll(); showToast('餐廳已刪除'); }
+    function openCustomerApp() { window.open('./index.html','_blank'); }
+    function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
+  </script>
+</body>
+</html>

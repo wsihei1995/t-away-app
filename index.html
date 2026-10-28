@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10231d" />
+  <title>天水圍人車隊 T-AWAY</title>
+  <style>
+    :root {
+      --ink: #10231d;
+      --muted: #6d7d75;
+      --paper: #f8f8f3;
+      --card: #ffffff;
+      --line: #e4e9e4;
+      --mint: #d7f1dc;
+      --lime: #bbf05d;
+      --orange: #f07d4f;
+      --yellow: #ffe7a8;
+      --shadow: 0 18px 44px rgba(20, 47, 37, .10);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang HK", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; border: 0; }
+    .app-shell { max-width: 1180px; min-height: 100vh; margin: 0 auto; padding: 0 22px 110px; }
+    .topbar {
+      height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      position: sticky; top: 0; z-index: 10; background: rgba(248,248,243,.88); backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 205px; }
+    .brand-mark { width: 43px; height: 43px; display: grid; place-items: center; color: var(--lime); background: var(--ink); border-radius: 14px; font-size: 23px; box-shadow: 5px 5px 0 #d8ebd8; }
+    .brand-name { font-weight: 900; letter-spacing: -.04em; font-size: 19px; line-height: 1; }
+    .brand-name small { display: block; font-size: 10px; letter-spacing: .16em; font-weight: 800; color: var(--orange); margin-top: 5px; }
+    .location { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .top-actions { display: flex; gap: 10px; }
+    .icon-btn { width: 42px; height: 42px; border-radius: 14px; color: var(--ink); background: var(--card); border: 1px solid var(--line); position: relative; font-size: 19px; }
+    .badge { position: absolute; right: -4px; top: -5px; min-width: 18px; height: 18px; padding: 0 4px; display: grid; place-items: center; border-radius: 99px; color: white; background: var(--orange); font-size: 10px; font-weight: 900; border: 2px solid var(--paper); }
+
+    .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin: 10px 0 30px; }
+    .hero-copy { min-height: 310px; display: flex; flex-direction: column; justify-content: center; padding: 36px 40px; border-radius: var(--radius-lg); background: var(--mint); position: relative; overflow: hidden; }
+    .hero-copy:after { content: ""; position: absolute; width: 260px; height: 260px; right: -80px; bottom: -120px; border-radius: 50%; background: rgba(255,255,255,.35); }
+    .eyebrow { display: inline-flex; align-items: center; width: fit-content; padding: 7px 11px; border-radius: 99px; color: #376249; background: rgba(255,255,255,.68); font-size: 12px; font-weight: 900; letter-spacing: .04em; }
+    h1 { max-width: 510px; margin: 16px 0 10px; font-size: clamp(34px, 5vw, 58px); line-height: 1.03; letter-spacing: -.08em; }
+    .hero-copy p { max-width: 435px; margin: 0; color: #4f6b5b; font-size: 16px; line-height: 1.7; }
+    .hero-art { min-height: 310px; padding: 24px; display: flex; align-items: end; border-radius: var(--radius-lg); background: var(--ink); overflow: hidden; position: relative; }
+    .hero-art:before { content: ""; position: absolute; width: 320px; height: 320px; top: -120px; right: -80px; border-radius: 50%; background: #274a3b; }
+    .hero-art:after { content: ""; position: absolute; width: 210px; height: 210px; left: -100px; bottom: -105px; border-radius: 50%; background: #1d3b30; }
+    .art-copy { position: relative; z-index: 1; color: white; }
+    .art-copy strong { display: block; max-width: 220px; font-size: 28px; line-height: 1.12; letter-spacing: -.06em; }
+    .art-copy span { display: block; margin-top: 11px; color: #a8cdb1; font-size: 13px; }
+    .art-emoji { position: absolute; right: 31px; top: 70px; z-index: 1; font-size: 100px; transform: rotate(-9deg); filter: drop-shadow(0 15px 10px rgba(0,0,0,.22)); }
+
+    .search-row { display: flex; gap: 11px; margin-bottom: 28px; }
+    .search-box { flex: 1; height: 53px; display: flex; align-items: center; gap: 10px; padding: 0 17px; border: 1px solid var(--line); background: white; border-radius: 17px; box-shadow: 0 8px 24px rgba(25,50,40,.04); }
+    .search-box span { font-size: 20px; color: var(--muted); }
+    .search-box input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 14px; }
+    .filter-btn { width: 53px; border-radius: 17px; background: var(--orange); color: white; font-size: 20px; }
+
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin: 0 0 16px; }
+    .section-heading h2 { margin: 0; font-size: 25px; letter-spacing: -.06em; }
+    .section-heading a { color: var(--orange); font-size: 13px; font-weight: 900; text-decoration: none; }
+    .categories { display: flex; gap: 10px; overflow-x: auto; padding: 2px 1px 18px; scrollbar-width: none; }
+    .categories::-webkit-scrollbar { display: none; }
+    .category { flex: 0 0 auto; min-width: 82px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 16px; background: white; color: var(--muted); font-size: 13px; font-weight: 800; text-align: center; transition: .2s; }
+    .category b { display: block; margin-bottom: 4px; font-size: 24px; }
+    .category.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+    .restaurant-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .restaurant-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; transition: transform .2s, box-shadow .2s; }
+    .restaurant-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .cover { height: 150px; padding: 13px; display: flex; justify-content: space-between; align-items: flex-start; position: relative; overflow: hidden; }
+    .cover:after { content: ""; position: absolute; inset: auto -25px -64px auto; width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,.34); }
+    .cover.green { background: #aee4c0; } .cover.peach { background: #ffd0a8; } .cover.yellow { background: #ffe79d; } .cover.blue { background: #bfdced; } .cover.pink { background: #f3c5ca; } .cover.lilac { background: #d5c9ef; }
+    .cover-label { position: relative; z-index: 1; padding: 6px 9px; color: var(--ink); background: rgba(255,255,255,.76); border-radius: 8px; font-size: 11px; font-weight: 900; }
+    .food-emoji { position: absolute; z-index: 1; right: 28px; bottom: 10px; font-size: 75px; filter: drop-shadow(0 11px 7px rgba(60,50,20,.14)); transform: rotate(-7deg); }
+    .restaurant-body { padding: 16px; }
+    .restaurant-top { display: flex; justify-content: space-between; gap: 12px; }
+    .restaurant-name { margin: 0; font-size: 17px; letter-spacing: -.04em; }
+    .rating { white-space: nowrap; color: #a87514; font-size: 12px; font-weight: 900; }
+    .restaurant-meta { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .restaurant-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+    .tag { padding: 5px 8px; color: #47705a; background: #edf7ed; border-radius: 7px; font-size: 10px; font-weight: 800; }
+    .order-btn { width: 100%; margin-top: 15px; padding: 11px; border-radius: 11px; color: var(--ink); background: var(--lime); font-size: 13px; font-weight: 900; transition: .2s; }
+    .order-btn:hover { background: #a9e443; }
+    .empty { grid-column: 1 / -1; padding: 45px 20px; color: var(--muted); text-align: center; background: white; border: 1px dashed var(--line); border-radius: var(--radius-md); }
+
+    .bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 17px; transform: translateX(-50%); width: min(440px, calc(100% - 32px)); display: flex; justify-content: space-around; padding: 10px 8px; background: rgba(16,35,29,.95); border-radius: 21px; box-shadow: 0 15px 40px rgba(16,35,29,.25); }
+    .nav-item { min-width: 72px; padding: 6px 10px; border-radius: 13px; color: #9db7a7; background: transparent; font-size: 11px; font-weight: 800; }
+    .nav-item span { display: block; margin-bottom: 3px; font-size: 19px; }
+    .nav-item.active { color: var(--ink); background: var(--lime); }
+
+    .overlay { position: fixed; inset: 0; z-index: 30; display: none; align-items: end; justify-content: center; background: rgba(13, 29, 23, .42); backdrop-filter: blur(4px); }
+    .overlay.open { display: flex; }
+    .sheet { width: min(580px, 100%); max-height: 90vh; overflow-y: auto; padding: 21px 22px 28px; border-radius: 28px 28px 0 0; background: var(--paper); animation: rise .25s ease-out; }
+    @keyframes rise { from { transform: translateY(50px); opacity: .4; } to { transform: translateY(0); opacity: 1; } }
+    .sheet-handle { width: 38px; height: 4px; margin: -5px auto 18px; border-radius: 20px; background: #d0d9d2; }
+    .sheet-header { display: flex; align-items: start; justify-content: space-between; gap: 14px; margin-bottom: 17px; }
+    .sheet-header h3 { margin: 0; font-size: 24px; letter-spacing: -.06em; }
+    .sheet-header p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .close-btn { width: 32px; height: 32px; border-radius: 10px; background: white; color: var(--muted); font-size: 17px; }
+    .menu-list { display: grid; gap: 10px; }
+    .menu-item { display: flex; align-items: center; gap: 13px; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: white; }
+    .menu-thumb { width: 60px; height: 60px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 13px; background: var(--yellow); font-size: 33px; }
+    .menu-info { min-width: 0; flex: 1; }
+    .menu-info strong { display: block; font-size: 14px; }
+    .menu-info p { margin: 4px 0 7px; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .menu-price { font-weight: 900; font-size: 14px; }
+    .add-btn { width: 32px; height: 32px; border-radius: 10px; color: var(--ink); background: var(--lime); font-size: 21px; line-height: 1; }
+    .cart-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 17px; padding: 15px 16px; border-radius: 16px; color: white; background: var(--ink); }
+    .cart-summary small { display: block; color: #9db7a7; font-size: 11px; }
+    .cart-summary strong { display: block; margin-top: 3px; font-size: 17px; }
+    .primary-btn { padding: 12px 16px; border-radius: 12px; color: var(--ink); background: var(--lime); font-size: 13px; font-weight: 900; }
+    .cart-line { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .cart-line:last-child { border-bottom: 0; }
+    .cart-line-info { flex: 1; }
+    .cart-line-info strong { display: block; font-size: 14px; }
+    .cart-line-info span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+    .qty { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 900; }
+    .qty button { width: 27px; height: 27px; border-radius: 8px; color: var(--ink); background: #edf2eb; font-weight: 900; }
+    .cart-totals { padding: 15px 0 3px; }
+    .total-row { display: flex; justify-content: space-between; padding: 5px 0; color: var(--muted); font-size: 13px; }
+    .total-row.final { color: var(--ink); font-size: 18px; font-weight: 900; }
+    .checkout-btn { width: 100%; margin-top: 15px; padding: 14px; border-radius: 13px; color: var(--ink); background: var(--lime); font-weight: 900; }
+    .payment-order { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:3px 0 18px; padding:15px 16px; border-radius:16px; color:white; background:var(--ink); }
+    .payment-order small { display:block; color:#9db7a7; font-size:11px; }
+    .payment-order strong { display:block; margin-top:3px; font-size:22px; }
+    .payment-order > span { padding:6px 9px; border-radius:8px; color:var(--ink); background:var(--lime); font-size:11px; font-weight:900; }
+    .payment-section-title { margin:0 0 9px; font-size:13px; font-weight:900; }
+    .payment-methods { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .payment-method { min-height:78px; display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding:11px; position:relative; border:1px solid var(--line); border-radius:13px; color:var(--ink); background:#fff; text-align:left; }
+    .payment-method strong { display:block; font-size:12px; }
+    .payment-method small { display:block; margin-top:2px; color:var(--muted); font-size:9px; }
+    .payment-method i { display:none; position:absolute; right:8px; top:8px; width:17px; height:17px; place-items:center; border-radius:50%; color:var(--ink); background:var(--lime); font-size:11px; font-style:normal; font-weight:900; }
+    .payment-method.active { border:2px solid var(--ink); padding:10px; box-shadow:0 4px 0 var(--lime); }
+    .payment-method.active i { display:grid; }
+    .payment-logo { width:25px; height:25px; display:grid; place-items:center; border-radius:8px; color:white; font-size:13px; font-weight:900; }
+    .alipay-logo { background:#1677ff; } .wechat-logo { background:#20c875; } .fps-logo { width:36px; color:var(--ink); background:#f4d34e; font-size:9px; }
+    .payment-details { display:flex; align-items:center; gap:10px; min-height:54px; margin-top:14px; padding:11px 12px; border-radius:13px; color:#466a51; background:var(--mint); font-size:11px; line-height:1.5; }
+    .payment-details strong { display:block; margin-bottom:2px; color:var(--ink); font-size:12px; }
+    .payment-detail-icon { width:28px; height:28px; flex:0 0 auto; display:grid; place-items:center; border-radius:9px; color:var(--ink); background:var(--lime); font-size:13px; font-weight:900; }
+    .checkout-fields { display:grid; gap:10px; margin-top:16px; }
+    .checkout-field { display:grid; gap:5px; }
+    .checkout-field span { color:var(--muted); font-size:11px; font-weight:900; }
+    .checkout-field input, .checkout-field textarea { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:11px; outline:0; color:var(--ink); background:#fff; font:inherit; font-size:12px; resize:vertical; }
+    .checkout-field input:focus, .checkout-field textarea:focus { border-color:var(--ink); box-shadow:0 0 0 3px rgba(187,240,93,.35); }
+    .payment-disclaimer { margin:12px 2px 0; color:var(--muted); font-size:10px; line-height:1.55; }
+    .checkout-btn { width: 100%; margin-top: 15px; padding: 14px; border-radius: 13px; color: var(--ink); background: var(--lime); font-weight: 900; }
+    .success-box { padding: 29px 14px 20px; text-align: center; }
+    .success-icon { width: 70px; height: 70px; display: grid; place-items: center; margin: 0 auto 17px; border-radius: 50%; color: var(--ink); background: var(--lime); font-size: 35px; }
+    .success-box h3 { margin: 0; font-size: 25px; letter-spacing: -.06em; }
+    .success-box p { margin: 10px auto 20px; max-width: 310px; color: var(--muted); line-height: 1.65; font-size: 13px; }
+    .progress { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 20px 0 26px; }
+    .progress-step { color: #99aa9e; font-size: 11px; font-weight: 800; }
+    .progress-dot { width: 28px; height: 28px; display: grid; place-items: center; margin: 0 auto 7px; border-radius: 50%; background: #e7ede7; }
+    .progress-step.done { color: #4e7d5d; }
+    .progress-step.done .progress-dot { color: var(--ink); background: var(--lime); }
+    .order-card { margin: 22px 0 0; padding: 19px; border-radius: var(--radius-md); color: white; background: var(--ink); box-shadow: var(--shadow); }
+    .order-card-top { display: flex; justify-content: space-between; gap: 12px; }
+    .order-card small { color: #9db7a7; }
+    .order-card strong { display: block; margin-top: 6px; font-size: 18px; }
+    .order-status { padding: 6px 9px; align-self: start; border-radius: 8px; color: var(--ink); background: var(--lime); font-size: 11px; font-weight: 900; }
+    .order-card p { margin: 14px 0 0; color: #c6d9ca; font-size: 12px; }
+    .mobile-only { display: none; }
+
+    @media (max-width: 800px) {
+      .restaurant-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero { grid-template-columns: 1fr; }
+      .hero-art { min-height: 180px; }
+      .hero-copy { min-height: 285px; }
+    }
+    @media (max-width: 540px) {
+      .app-shell { padding: 0 15px 105px; }
+      .topbar { height: 68px; }
+      .location { display: none; }
+      .brand { min-width: 0; }
+      .brand-name { font-size: 17px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 20px; }
+      .hero { margin-top: 10px; gap: 11px; }
+      .hero-copy { min-height: 280px; padding: 27px 25px; }
+      .hero-art { min-height: 150px; padding: 20px; }
+      .art-copy strong { font-size: 22px; }
+      .art-emoji { top: 33px; right: 25px; font-size: 75px; }
+      .restaurant-grid { grid-template-columns: 1fr; gap: 12px; }
+      .cover { height: 164px; }
+      .food-emoji { right: 45px; }
+      .desktop-only { display: none; }
+      .mobile-only { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🚲</div>
+        <div class="brand-name">天水圍人車隊<small>T-AWAY · 社區外賣</small></div>
+      </div>
+      <div class="location">⌖　送到：天盛苑 · 天水圍</div>
+      <div class="top-actions">
+        <button class="icon-btn" aria-label="通知">♢<span class="badge" style="background:var(--lime);color:var(--ink)">2</span></button>
+        <button class="icon-btn" aria-label="購物車" onclick="openCart()">🛒<span class="badge" id="cartBadge">0</span></button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">天水圍街坊專屬 · 滿 $100 免運</span>
+        <h1>今晚食咩？<br><span style="color:var(--orange)">我哋幫你送到。</span></h1>
+        <p>附近好味道，一個 App 搞掂。支持本區小店，落單即有街坊車手接力送到你門口。</p>
+      </div>
+      <div class="hero-art">
+        <div class="art-copy"><strong>落單快，<br>食得近。</strong><span>平均 30 分鐘送到你屋企</span></div>
+        <div class="art-emoji">🍜</div>
+      </div>
+    </section>
+
+    <div class="search-row">
+      <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋餐廳、菜式或地區" oninput="renderRestaurants()" /></label>
+      <button class="filter-btn" aria-label="篩選">☷</button>
+    </div>
+
+    <section>
+      <div class="section-heading"><h2>今日想食</h2><a href="#restaurants">查看全部　→</a></div>
+      <div class="categories" id="categories">
+        <button class="category active" data-category="全部" onclick="setCategory(this)"><b>✨</b>全部</button>
+        <button class="category" data-category="飯類" onclick="setCategory(this)"><b>🍚</b>飯類</button>
+        <button class="category" data-category="麵食" onclick="setCategory(this)"><b>🍜</b>麵食</button>
+        <button class="category" data-category="茶飲" onclick="setCategory(this)"><b>🧋</b>茶飲</button>
+        <button class="category" data-category="小食" onclick="setCategory(this)"><b>🍢</b>小食</button>
+        <button class="category" data-category="甜品" onclick="setCategory(this)"><b>🍮</b>甜品</button>
+      </div>
+    </section>
+
+    <section id="restaurants">
+      <div class="section-heading"><h2>附近人氣小店</h2><span class="desktop-only" style="color:var(--muted);font-size:12px">共 18 間營業中</span></div>
+      <div class="restaurant-grid" id="restaurantGrid"></div>
+    </section>
+
+    <div class="order-card" id="activeOrder" style="display:none">
+      <div class="order-card-top"><div><small>正在配送 · 訂單 #TW2488</small><strong>落單成功，街坊車手已接單</strong></div><span class="order-status">配送中</span></div>
+      <p>預計 12:35 前送到　·　點擊查看訂單詳情 →</p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" aria-label="主選單">
+    <button class="nav-item active" onclick="scrollToTop()"><span>⌂</span>首頁</button>
+    <button class="nav-item" onclick="document.getElementById('restaurants').scrollIntoView({behavior:'smooth'})"><span>◌</span>搵食</button>
+    <button class="nav-item" onclick="openCart()"><span>🛒</span>購物車</button>
+    <button class="nav-item" onclick="showToast('個人中心即將推出，街坊敬請期待！')"><span>♙</span>我的</button>
+  </nav>
+
+  <div class="overlay" id="menuOverlay" onclick="closeOnBackdrop(event, 'menuOverlay')">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><h3 id="menuTitle">餐廳菜單</h3><p id="menuSubtitle">招牌菜 · 現點現做</p></div><button class="close-btn" onclick="closeOverlay('menuOverlay')">×</button></div>
+      <div class="menu-list" id="menuList"></div>
+      <div class="cart-summary"><div><small>購物車</small><strong id="summaryText">尚未選擇餐點</strong></div><button class="primary-btn" onclick="openCart()">查看購物車</button></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="cartOverlay" onclick="closeOnBackdrop(event, 'cartOverlay')">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><h3>你的購物車</h3><p>食好啲，唔好食到一半先加單。</p></div><button class="close-btn" onclick="closeOverlay('cartOverlay')">×</button></div>
+      <div id="cartContent"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="paymentOverlay" onclick="closeOnBackdrop(event, 'paymentOverlay')">
+    <div class="sheet payment-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header"><div><h3>確認訂單及付款</h3><p>揀一個付款方式，填好送餐資料。</p></div><button class="close-btn" onclick="closeOverlay('paymentOverlay')">×</button></div>
+      <div class="payment-order"><div><small>訂單總額</small><strong id="paymentTotal">$0</strong></div><span id="paymentItems">0 件餐點</span></div>
+      <div class="payment-section-title">付款方式</div>
+      <div class="payment-methods">
+        <button class="payment-method active" data-method="alipay" onclick="setPaymentMethod('alipay')"><span class="payment-logo alipay-logo">支</span><span><strong>支付寶</strong><small>AlipayHK</small></span><i>✓</i></button>
+        <button class="payment-method" data-method="wechat" onclick="setPaymentMethod('wechat')"><span class="payment-logo wechat-logo">微</span><span><strong>微信支付</strong><small>WeChat Pay</small></span><i>✓</i></button>
+        <button class="payment-method" data-method="fps" onclick="setPaymentMethod('fps')"><span class="payment-logo fps-logo">FPS</span><span><strong>轉數快</strong><small>FPS</small></span><i>✓</i></button>
+      </div>
+      <div id="paymentDetails" class="payment-details"></div>
+      <div class="checkout-fields">
+        <label class="checkout-field"><span>送餐地址</span><input id="deliveryAddress" placeholder="例如：天盛苑 X 座 10 樓 1001 室" /></label>
+        <label class="checkout-field"><span>聯絡電話</span><input id="deliveryPhone" type="tel" inputmode="tel" placeholder="例如：6123 4567" /></label>
+        <label class="checkout-field"><span>備註（選填）</span><textarea id="deliveryNote" rows="2" placeholder="例如：放管理處，少辣，謝謝"></textarea></label>
+      </div>
+      <button class="checkout-btn" id="confirmPayButton" onclick="confirmPayment()">確認付款並落單　$0</button>
+      <p class="payment-disclaimer">現階段為流程示範版；正式收款需接入已核實的支付寶、微信支付或轉數快商戶帳戶。</p>
+    </div>
+  </div>
+
+  <div class="overlay" id="successOverlay">
+    <div class="sheet">
+      <div class="sheet-handle"></div>
+      <div class="success-box">
+        <div class="success-icon">✓</div>
+        <h3>落單成功！</h3>
+        <p>多謝你支持天水圍小店。街坊車手已經出發，預計約 30 分鐘送到。</p>
+        <div class="progress">
+          <div class="progress-step done"><div class="progress-dot">✓</div>餐廳接單</div>
+          <div class="progress-step done"><div class="progress-dot">♢</div>準備中</div>
+          <div class="progress-step"><div class="progress-dot">⌖</div>送到府上</div>
+        </div>
+        <button class="checkout-btn" onclick="closeOverlay('successOverlay'); document.getElementById('activeOrder').style.display='block'; document.getElementById('activeOrder').scrollIntoView({behavior:'smooth'});">查看訂單進度</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast" style="position:fixed;z-index:50;left:50%;bottom:92px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 16px;border-radius:13px;color:white;background:var(--ink);font-size:13px;transition:.25s;box-shadow:var(--shadow)"></div>
+
+  <script>
+    const defaultRestaurants = [
+      { id: 1, name: '阿婆車仔麵', category: '麵食', area: '天瑞邨', time: '20–30 分鐘', fee: '$12 起', rating: '4.9', reviews: '328', cover: 'green', emoji: '🍜', label: '街坊推介', tags: ['宵夜之選', '可加餸'], menu: [{name:'秘製牛腩車仔麵', desc:'蘿蔔 · 魚蛋 · 豬皮', price:42, emoji:'🍜'}, {name:'雙拼車仔麵', desc:'腸仔 · 魚蛋 · 豆卜', price:38, emoji:'🍲'}, {name:'凍檸茶', desc:'少甜 · 少冰', price:16, emoji:'🍋'}] },
+      { id: 2, name: '禾田便當', category: '飯類', area: '天耀邨', time: '25–35 分鐘', fee: '$8 起', rating: '4.8', reviews: '216', cover: 'peach', emoji: '🍱', label: '午市熱賣', tags: ['足料實惠', '少油健康'], menu: [{name:'照燒雞扒便當', desc:'溏心蛋 · 西蘭花 · 白飯', price:58, emoji:'🍱'}, {name:'台式鹽酥雞飯', desc:'酸菜 · 滷蛋 · 白飯', price:55, emoji:'🍗'}, {name:'台式冬瓜茶', desc:'500ml · 甜度固定', price:18, emoji:'🧋'}] },
+      { id: 3, name: '茶日子', category: '茶飲', area: '天盛苑', time: '15–25 分鐘', fee: '$6 起', rating: '4.7', reviews: '189', cover: 'yellow', emoji: '🧋', label: '新店登場', tags: ['買一送一', '台式茶飲'], menu: [{name:'黑糖珍珠鮮奶', desc:'黑糖 · 珍珠 · 鮮奶', price:28, emoji:'🧋'}, {name:'桂花烏龍茶', desc:'700ml · 微甜', price:24, emoji:'🍵'}, {name:'芋泥奶酪', desc:'每日新鮮製作', price:32, emoji:'🍮'}] },
+      { id: 4, name: '鄰里燒味飯店', category: '飯類', area: '天恒邨', time: '30–40 分鐘', fee: '$10 起', rating: '4.6', reviews: '154', cover: 'blue', emoji: '🍖', label: '老字號', tags: ['即叫即燒', '大份量'], menu: [{name:'蜜汁叉燒燒肉飯', desc:'雙拼 · 菜心 · 白飯', price:62, emoji:'🍖'}, {name:'脆皮燒鵝飯', desc:'例湯 · 菜心 · 白飯', price:68, emoji:'🍗'}, {name:'凍檸茶', desc:'少甜 · 少冰', price:16, emoji:'🍋'}] },
+      { id: 5, name: '小島甜室', category: '甜品', area: '濕地公園', time: '20–30 分鐘', fee: '$8 起', rating: '4.9', reviews: '97', cover: 'pink', emoji: '🍮', label: '人氣甜品', tags: ['手工製作', '下午茶'], menu: [{name:'海鹽焦糖布丁', desc:'滑嫩 · 每日限量', price:32, emoji:'🍮'}, {name:'芒芒楊枝甘露', desc:'芒果 · 西米 · 椰奶', price:38, emoji:'🥭'}, {name:'伯爵奶茶', desc:'鮮奶 · 伯爵茶', price:26, emoji:'🫖'}] },
+      { id: 6, name: '串門小食部', category: '小食', area: '天華邨', time: '18–28 分鐘', fee: '$7 起', rating: '4.8', reviews: '243', cover: 'lilac', emoji: '🍢', label: '下酒小食', tags: ['多人分享', '即叫即炸'], menu: [{name:'招牌雞翼拼盤', desc:'原味 · 椒鹽 · 6隻', price:45, emoji:'🍗'}, {name:'台灣大香腸', desc:'蒜片 · 九層塔', price:26, emoji:'🌭'}, {name:'炸燒賣拼盤', desc:'魚蛋 · 燒賣 · 魚腐', price:35, emoji:'🍢'}] }
+    ];
+    const restaurants = (() => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('taway_restaurants_v1') || 'null');
+        return Array.isArray(saved) && saved.length ? saved : defaultRestaurants;
+      } catch (error) {
+        return defaultRestaurants;
+      }
+    })();
+    let currentCategory = '全部';
+    let currentRestaurant = null;
+    let cart = [];
+
+    function renderRestaurants() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const list = restaurants.filter(r => r.active !== false && (currentCategory === '全部' || r.category === currentCategory) && (!query || `${r.name}${r.area}${r.category}${r.tags.join('')}`.toLowerCase().includes(query)));
+      const grid = document.getElementById('restaurantGrid');
+      if (!list.length) { grid.innerHTML = '<div class="empty">搵唔到相關店舖，不如試下搜尋「飯」或揀其他分類？</div>'; return; }
+      grid.innerHTML = list.map(r => `
+        <article class="restaurant-card">
+          <div class="cover ${r.cover}"><span class="cover-label">${r.label}</span><span class="food-emoji">${r.emoji}</span></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top"><h3 class="restaurant-name">${r.name}</h3><span class="rating">★ ${r.rating} <em style="font-style:normal;color:var(--muted);font-weight:600">(${r.reviews})</em></span></div>
+            <div class="restaurant-meta"><span>⌖ ${r.area}</span><span>◷ ${r.time}</span><span>運費 ${r.fee}</span></div>
+            <div class="restaurant-tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+            <button class="order-btn" onclick="openMenu(${r.id})">睇吓食咩　→</button>
+          </div>
+        </article>`).join('');
+    }
+    function setCategory(btn) { currentCategory = btn.dataset.category; document.querySelectorAll('.category').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderRestaurants(); }
+    function openMenu(id) {
+      currentRestaurant = restaurants.find(r => r.id === id);
+      document.getElementById('menuTitle').textContent = currentRestaurant.name;
+      document.getElementById('menuSubtitle').textContent = `${currentRestaurant.area} · ${currentRestaurant.time} · ${currentRestaurant.rating} 分`;
+      document.getElementById('menuList').innerHTML = currentRestaurant.menu.map((item, i) => `<div class="menu-item"><div class="menu-thumb">${item.emoji}</div><div class="menu-info"><strong>${item.name}</strong><p>${item.desc}</p><span class="menu-price">$${item.price}</span></div><button class="add-btn" onclick="addToCart(${currentRestaurant.id}, ${i})">＋</button></div>`).join('');
+      updateSummary(); document.getElementById('menuOverlay').classList.add('open');
+    }
+    function addToCart(restaurantId, menuIndex) {
+      const restaurant = restaurants.find(r => r.id === restaurantId), item = restaurant.menu[menuIndex];
+      const existing = cart.find(x => x.restaurantId === restaurantId && x.name === item.name);
+      if (existing) existing.qty++; else cart.push({ restaurantId, restaurantName: restaurant.name, name: item.name, price: item.price, qty: 1 });
+      updateCartBadge(); updateSummary(); showToast(`${item.name} 已加入購物車`);
+    }
+    function updateSummary() { const count = cart.reduce((s, i) => s + i.qty, 0); document.getElementById('summaryText').textContent = count ? `${count} 件餐點 · $${cart.reduce((s,i)=>s+i.price*i.qty,0)}` : '尚未選擇餐點'; }
+    function updateCartBadge() { const count = cart.reduce((s, i) => s + i.qty, 0); document.getElementById('cartBadge').textContent = count; document.getElementById('cartBadge').style.display = count ? 'grid' : 'none'; }
+    function openCart() { closeOverlay('menuOverlay'); renderCart(); document.getElementById('cartOverlay').classList.add('open'); }
+    function renderCart() {
+      const content = document.getElementById('cartContent');
+      if (!cart.length) { content.innerHTML = '<div class="empty" style="margin-top:10px">購物車仲係空空如也<br><span style="font-size:12px">去附近小店揀啲好味道啦！</span></div>'; return; }
+      const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0), delivery = subtotal >= 100 ? 0 : 8, total = subtotal + delivery;
+      content.innerHTML = `<div>${cart.map((item, i) => `<div class="cart-line"><div class="cart-line-info"><strong>${item.name}</strong><span>${item.restaurantName} · $${item.price}</span></div><div class="qty"><button onclick="changeQty(${i}, -1)">−</button><span>${item.qty}</span><button onclick="changeQty(${i}, 1)">＋</button></div></div>`).join('')}</div><div class="cart-totals"><div class="total-row"><span>餐點小計</span><span>$${subtotal}</span></div><div class="total-row"><span>街坊配送費</span><span>${delivery ? '$'+delivery : '免費'}</span></div><div class="total-row final"><span>合計</span><span>$${total}</span></div></div><button class="checkout-btn" onclick="startCheckout()">選擇付款方式　$${total}</button>`;
+    }
+    function changeQty(index, amount) { cart[index].qty += amount; if (cart[index].qty <= 0) cart.splice(index,1); updateCartBadge(); updateSummary(); renderCart(); }
+    function getCartTotals(items = cart) { const subtotal = items.reduce((s,i)=>s+i.price*i.qty,0), delivery = subtotal >= 100 ? 0 : 8; return { subtotal, delivery, total: subtotal + delivery }; }
+    let selectedPayment = 'alipay';
+    let checkoutItems = [];
+    function startCheckout() {
+      if (!cart.length) return;
+      checkoutItems = cart.map(item => ({...item}));
+      const { total } = getCartTotals(checkoutItems);
+      document.getElementById('paymentTotal').textContent = `$${total}`;
+      document.getElementById('paymentItems').textContent = `${checkoutItems.reduce((s,i)=>s+i.qty,0)} 件餐點`;
+      document.getElementById('deliveryAddress').value = '';
+      document.getElementById('deliveryPhone').value = '';
+      document.getElementById('deliveryNote').value = '';
+      setPaymentMethod('alipay');
+      closeOverlay('cartOverlay');
+      document.getElementById('paymentOverlay').classList.add('open');
+    }
+    function getPaymentSettings() { try { return JSON.parse(localStorage.getItem('taway_payment_settings_v1') || '{}'); } catch (error) { return {}; } }
+    function setPaymentMethod(method) {
+      selectedPayment = method;
+      document.querySelectorAll('.payment-method').forEach(button => button.classList.toggle('active', button.dataset.method === method));
+      const detail = document.getElementById('paymentDetails');
+      const paymentSettings = getPaymentSettings();
+      const details = {
+        alipay: `<strong>支付寶 AlipayHK</strong><span>${paymentSettings.alipay ? '已設定商戶資料，正式版會跳轉至支付寶付款頁面。' : '正式版會跳轉至支付寶付款頁面。'}</span>`,
+        wechat: `<strong>微信支付 WeChat Pay</strong><span>${paymentSettings.wechat ? '已設定商戶資料，正式版會跳轉至微信支付付款頁面。' : '正式版會跳轉至微信支付付款頁面。'}</span>`,
+        fps: `<strong>轉數快 FPS</strong><span>${paymentSettings.fps ? `收款識別碼：${paymentSettings.fps}` : '正式版會顯示你的 FPS 收款識別碼及付款指示。'}</span>`
+      };
+      detail.innerHTML = `<div class="payment-detail-icon">${method === 'alipay' ? '支' : method === 'wechat' ? '微' : 'F'}</div><div>${details[method]}</div>`;
+      const { total } = getCartTotals(checkoutItems);
+      document.getElementById('confirmPayButton').textContent = `${method === 'fps' ? '確認轉數快付款並落單' : '前往付款並落單'}　$${total}`;
+    }
+    function confirmPayment() {
+      const address = document.getElementById('deliveryAddress').value.trim();
+      const phone = document.getElementById('deliveryPhone').value.trim();
+      if (!address || !phone) { showToast('請填寫送餐地址及聯絡電話'); return; }
+      const methodName = selectedPayment === 'alipay' ? '支付寶' : selectedPayment === 'wechat' ? '微信支付' : '轉數快';
+      closeOverlay('paymentOverlay');
+      document.getElementById('successOverlay').classList.add('open');
+      document.querySelector('#successOverlay .success-box p').textContent = `付款方式：${methodName}。現階段為示範訂單，正式版接通支付接口後會由支付平台確認收款。`;
+      cart = []; checkoutItems = []; updateCartBadge(); updateSummary();
+    }
+    function checkout() { startCheckout(); }
+    function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+    function closeOnBackdrop(event, id) { if (event.target.id === id) closeOverlay(id); }
+    function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.style.opacity = '1'; toast.style.transform = 'translate(-50%,0)'; clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translate(-50%,20px)'; }, 2200); }
+    function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+    renderRestaurants(); updateCartBadge();
+  </script>
+</body>
+</html>
