@@ -247,8 +247,8 @@
     </section>
 
     <div class="order-card" id="activeOrder" style="display:none">
-      <div class="order-card-top"><div><small>正在配送 · 訂單 #TW2488</small><strong>落單成功，街坊車手已接單</strong></div><span class="order-status">配送中</span></div>
-      <p>預計 12:35 前送到　·　點擊查看訂單詳情 →</p>
+      <div class="order-card-top"><div><small id="activeOrderMeta">最近訂單</small><strong id="activeOrderTitle">等待餐廳確認</strong></div><span class="order-status" id="activeOrderStatus">待確認</span></div>
+      <p id="activeOrderNote">訂單已送出，等待餐廳確認；重新整理頁面可查看最新狀態。</p>
     </div>
   </main>
 
@@ -317,6 +317,7 @@
   <div id="toast" style="position:fixed;z-index:50;left:50%;bottom:92px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 16px;border-radius:13px;color:white;background:var(--ink);font-size:13px;transition:.25s;box-shadow:var(--shadow)"></div>
 
   <script>
+    const ORDERS_KEY = 'taway_orders_v1';
     const defaultRestaurants = [
       { id: 1, name: '阿婆車仔麵', category: '麵食', area: '天瑞邨', time: '20–30 分鐘', fee: '$12 起', rating: '4.9', reviews: '328', cover: 'green', emoji: '🍜', label: '街坊推介', tags: ['宵夜之選', '可加餸'], menu: [{name:'秘製牛腩車仔麵', desc:'蘿蔔 · 魚蛋 · 豬皮', price:42, emoji:'🍜'}, {name:'雙拼車仔麵', desc:'腸仔 · 魚蛋 · 豆卜', price:38, emoji:'🍲'}, {name:'凍檸茶', desc:'少甜 · 少冰', price:16, emoji:'🍋'}] },
       { id: 2, name: '禾田便當', category: '飯類', area: '天耀邨', time: '25–35 分鐘', fee: '$8 起', rating: '4.8', reviews: '216', cover: 'peach', emoji: '🍱', label: '午市熱賣', tags: ['足料實惠', '少油健康'], menu: [{name:'照燒雞扒便當', desc:'溏心蛋 · 西蘭花 · 白飯', price:58, emoji:'🍱'}, {name:'台式鹽酥雞飯', desc:'酸菜 · 滷蛋 · 白飯', price:55, emoji:'🍗'}, {name:'台式冬瓜茶', desc:'500ml · 甜度固定', price:18, emoji:'🧋'}] },
@@ -336,6 +337,24 @@
     let currentCategory = '全部';
     let currentRestaurant = null;
     let cart = [];
+
+    function getOrders() { try { const saved = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); return Array.isArray(saved) ? saved : []; } catch (error) { return []; } }
+    function orderStatusLabel(status) { return ({pending:'待確認',confirmed:'已確認',preparing:'準備中',delivering:'配送中',completed:'已完成',cancelled:'已取消'})[status] || '待確認'; }
+    function orderStatusNote(order) {
+      const notes = { pending:'訂單已送出，等待餐廳確認；重新整理頁面可查看最新狀態。', confirmed:'餐廳已確認接單，正在安排製作。', preparing:'餐廳正在準備餐點，完成後會安排街坊車手配送。', delivering:'街坊車手已出發，請留意電話。', completed:'訂單已完成，多謝支持天水圍小店！', cancelled:'此訂單已取消，如有疑問請聯絡店舖。' };
+      return notes[order.status] || notes.pending;
+    }
+    function renderActiveOrder() {
+      const order = getOrders()[0];
+      const card = document.getElementById('activeOrder');
+      if (!order) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      document.getElementById('activeOrderMeta').textContent = `訂單 #${order.id} · $${order.total}`;
+      document.getElementById('activeOrderTitle').textContent = orderStatusLabel(order.status);
+      document.getElementById('activeOrderStatus').textContent = orderStatusLabel(order.status);
+      document.getElementById('activeOrderNote').textContent = orderStatusNote(order);
+    }
+    window.addEventListener('storage', event => { if (event.key === ORDERS_KEY) renderActiveOrder(); });
 
     function renderRestaurants() {
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -413,17 +432,20 @@
       const phone = document.getElementById('deliveryPhone').value.trim();
       if (!address || !phone) { showToast('請填寫送餐地址及聯絡電話'); return; }
       const methodName = selectedPayment === 'alipay' ? '支付寶' : selectedPayment === 'wechat' ? '微信支付' : '轉數快';
+      const totals = getCartTotals(checkoutItems);
+      const order = { id:`TW${Date.now().toString().slice(-6)}`, createdAt:new Date().toISOString(), status:'pending', paymentMethod:methodName, address, phone, note:document.getElementById('deliveryNote').value.trim(), items:checkoutItems.map(item => ({...item})), subtotal:totals.subtotal, delivery:totals.delivery, total:totals.total };
+      const orders = getOrders(); orders.unshift(order); localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
       closeOverlay('paymentOverlay');
       document.getElementById('successOverlay').classList.add('open');
-      document.querySelector('#successOverlay .success-box p').textContent = `付款方式：${methodName}。現階段為示範訂單，正式版接通支付接口後會由支付平台確認收款。`;
-      cart = []; checkoutItems = []; updateCartBadge(); updateSummary();
+      document.querySelector('#successOverlay .success-box p').textContent = `訂單 ${order.id} 已送出，付款方式：${methodName}。現正等待餐廳後台確認接單。`;
+      cart = []; checkoutItems = []; updateCartBadge(); updateSummary(); renderActiveOrder();
     }
     function checkout() { startCheckout(); }
     function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
     function closeOnBackdrop(event, id) { if (event.target.id === id) closeOverlay(id); }
     function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.style.opacity = '1'; toast.style.transform = 'translate(-50%,0)'; clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translate(-50%,20px)'; }, 2200); }
     function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
-    renderRestaurants(); updateCartBadge();
+    renderRestaurants(); updateCartBadge(); renderActiveOrder();
   </script>
 </body>
 </html>

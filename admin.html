@@ -84,6 +84,26 @@
     .save-btn { color:var(--ink); background:var(--lime); }
     .cancel-btn { color:var(--ink); background:#eef3ed; }
     .notice { margin-top:22px; padding:14px 15px; color:#4a6b56; background:var(--mint); border-radius:14px; font-size:11px; line-height:1.6; }
+    .orders-section { margin-top:20px; }
+    .order-filter { height:40px; padding:0 11px; border:1px solid var(--line); border-radius:11px; outline:0; color:var(--ink); background:#fff; font-size:12px; }
+    .order-list { display:grid; gap:10px; }
+    .order-row { padding:14px; border:1px solid var(--line); border-radius:15px; background:#fff; }
+    .order-row-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .order-row-title strong { display:block; font-size:14px; }
+    .order-row-title small { display:block; margin-top:5px; color:var(--muted); font-size:10px; }
+    .order-status-pill { flex:0 0 auto; padding:6px 8px; border-radius:8px; color:#6d5a13; background:#fff1bc; font-size:10px; font-weight:900; }
+    .order-status-pill.confirmed,.order-status-pill.preparing { color:#3c6d4c; background:#e4f4e4; }
+    .order-status-pill.delivering { color:#315d79; background:#e2f1fb; }
+    .order-status-pill.completed { color:#456450; background:#d9f1df; }
+    .order-status-pill.cancelled { color:#994d46; background:#fff0ed; }
+    .order-items { margin:11px 0 0; padding:10px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--muted); font-size:11px; line-height:1.7; }
+    .order-meta { display:grid; gap:4px; margin-top:10px; color:var(--muted); font-size:11px; }
+    .order-meta b { color:var(--ink); }
+    .order-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+    .order-actions button { padding:9px 11px; border-radius:9px; color:var(--ink); background:#eef3ed; font-size:11px; font-weight:900; }
+    .order-actions button.primary-action { background:var(--lime); }
+    .order-actions button.cancel-action { color:var(--red); background:#fff0ed; }
+    .notice { margin-top:22px; padding:14px 15px; color:#4a6b56; background:var(--mint); border-radius:14px; font-size:11px; line-height:1.6; }
     .empty { padding:35px 15px; border:1px dashed var(--line); border-radius:14px; color:var(--muted); text-align:center; font-size:13px; }
     .toast { position:fixed; z-index:20; left:50%; bottom:24px; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:12px 16px; border-radius:12px; color:#fff; background:var(--ink); font-size:12px; transition:.25s; box-shadow:var(--shadow); }
     .toast.show { opacity:1; transform:translate(-50%,0); }
@@ -138,6 +158,11 @@
         <div id="restaurantList" class="restaurant-list"></div>
       </section>
 
+      <section class="section-card orders-section">
+        <div class="section-header"><div><h2>訂單管理</h2><p style="margin:6px 0 0;color:var(--muted);font-size:12px">客人落單後，先由你確認接單，再更新製作及配送狀態。</p></div><select id="orderFilter" class="order-filter" onchange="renderOrders()"><option value="all">全部訂單</option><option value="pending">待確認</option><option value="confirmed">已確認</option><option value="preparing">準備中</option><option value="delivering">配送中</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select></div>
+        <div id="orderList" class="order-list"></div>
+      </section>
+
       <section id="editor" class="section-card editor">
         <div class="editor-title"><div><h2 id="editorHeading">新增餐廳</h2><p>資料儲存後，前台刷新頁面即可看到更新。</p></div><button class="ghost" onclick="closeEditor()">× 關閉</button></div>
         <div class="form-grid">
@@ -173,6 +198,7 @@
 
   <script>
     const STORAGE_KEY = 'taway_restaurants_v1';
+    const ORDERS_KEY = 'taway_orders_v1';
     const PAYMENT_SETTINGS_KEY = 'taway_payment_settings_v1';
     const seed = [
       { id: 1, name: '阿婆車仔麵', category: '麵食', area: '天瑞邨', time: '20–30 分鐘', fee: '$12 起', rating: '4.9', reviews: '328', cover: 'green', emoji: '🍜', label: '街坊推介', tags: ['宵夜之選','可加餸'], active: true, menu: [{name:'秘製牛腩車仔麵',desc:'蘿蔔 · 魚蛋 · 豬皮',price:42,emoji:'🍜'},{name:'雙拼車仔麵',desc:'腸仔 · 魚蛋 · 豆卜',price:38,emoji:'🍲'},{name:'凍檸茶',desc:'少甜 · 少冰',price:16,emoji:'🍋'}] },
@@ -196,7 +222,23 @@
       document.getElementById('loginView').style.display='none'; document.getElementById('adminView').style.display='block'; restaurants = getData(); renderAll(); loadPaymentSettings();
     }
     function logout() { document.getElementById('adminView').style.display='none'; document.getElementById('loginView').style.display='grid'; document.getElementById('pinInput').value=''; }
-    function renderAll() { updateStats(); renderList(); }
+    function renderAll() { updateStats(); renderList(); renderOrders(); }
+    function getOrders() { try { const saved = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); return Array.isArray(saved) ? saved : []; } catch (e) { return []; } }
+    function orderStatusLabel(status) { return ({pending:'待確認',confirmed:'已確認',preparing:'準備中',delivering:'配送中',completed:'已完成',cancelled:'已取消'})[status] || '待確認'; }
+    function renderOrders() {
+      const filter = document.getElementById('orderFilter').value;
+      const all = getOrders();
+      const list = filter === 'all' ? all : all.filter(order => order.status === filter);
+      const box = document.getElementById('orderList');
+      if (!list.length) { box.innerHTML='<div class="empty">暫時沒有符合條件的訂單。</div>'; return; }
+      box.innerHTML = list.map(order => {
+        const items = (order.items || []).map(item => `${escapeHtml(item.name)} × ${item.qty}`).join('、');
+        const actions = order.status === 'pending' ? `<button class="primary-action" onclick="updateOrderStatus('${order.id}','confirmed')">確認接單</button><button class="cancel-action" onclick="updateOrderStatus('${order.id}','cancelled')">取消訂單</button>` : order.status === 'confirmed' ? `<button class="primary-action" onclick="updateOrderStatus('${order.id}','preparing')">開始製作</button><button class="cancel-action" onclick="updateOrderStatus('${order.id}','cancelled')">取消訂單</button>` : order.status === 'preparing' ? `<button class="primary-action" onclick="updateOrderStatus('${order.id}','delivering')">出發配送</button>` : order.status === 'delivering' ? `<button class="primary-action" onclick="updateOrderStatus('${order.id}','completed')">標記已完成</button>` : '';
+        return `<article class="order-row"><div class="order-row-top"><div class="order-row-title"><strong>訂單 #${escapeHtml(order.id)}</strong><small>${new Date(order.createdAt).toLocaleString('zh-HK')} · ${escapeHtml(order.paymentMethod || '未選付款')}</small></div><span class="order-status-pill ${order.status}">${orderStatusLabel(order.status)}</span></div><div class="order-items">${items || '沒有餐點資料'}</div><div class="order-meta"><span>送餐地址：<b>${escapeHtml(order.address || '未填寫')}</b></span><span>聯絡電話：<b>${escapeHtml(order.phone || '未填寫')}</b></span><span>合計：<b>$${order.total || 0}</b></span>${order.note ? `<span>備註：<b>${escapeHtml(order.note)}</b></span>` : ''}</div>${actions ? `<div class="order-actions">${actions}</div>` : ''}</article>`;
+      }).join('');
+    }
+    function updateOrderStatus(id, status) { const orders=getOrders(); const order=orders.find(item=>item.id===id); if(!order)return; order.status=status; order.updatedAt=new Date().toISOString(); localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); renderOrders(); showToast(`訂單已更新為「${orderStatusLabel(status)}」`); }
+    window.addEventListener('storage', event => { if (event.key === ORDERS_KEY) renderOrders(); });
     function loadPaymentSettings() {
       let settings = {};
       try { settings = JSON.parse(localStorage.getItem(PAYMENT_SETTINGS_KEY) || '{}'); } catch (e) {}
