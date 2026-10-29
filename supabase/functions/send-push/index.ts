@@ -73,7 +73,7 @@ async function sendTo(subscriptions: any[], notification: any) {
       if (code === 404 || code === 410) {
         await admin.from('push_subscriptions').update({ active: false }).eq('id', item.id);
       } else {
-        console.error('push delivery failed', code, error?.message || error);
+        console.error('push delivery failed', code, error?.body || error?.message || error);
       }
     }
   }
