@@ -216,10 +216,8 @@ on conflict (order_id) do update set
   status = excluded.status,
   updated_at = excluded.updated_at;
 
--- Realtime is required for the customer app to receive status updates.
 -- ============================================================
 -- Courier backend migration
--- Run this section after the original schema above.
 -- ============================================================
 
 create table if not exists public.staff_profiles (
@@ -235,40 +233,20 @@ create table if not exists public.staff_profiles (
 alter table public.staff_profiles enable row level security;
 
 create or replace function public.is_admin()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.staff_profiles
-    where user_id = auth.uid() and role = 'admin' and active = true
-  );
-$$;
+returns boolean language sql stable security definer set search_path = public
+as $$ select exists (select 1 from public.staff_profiles where user_id = auth.uid() and role = 'admin' and active = true); $$;
 
 create or replace function public.is_courier()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.staff_profiles
-    where user_id = auth.uid() and role = 'courier' and active = true
-  );
-$$;
+returns boolean language sql stable security definer set search_path = public
+as $$ select exists (select 1 from public.staff_profiles where user_id = auth.uid() and role = 'courier' and active = true); $$;
 
 drop policy if exists "Staff can read own profile" on public.staff_profiles;
 create policy "Staff can read own profile" on public.staff_profiles
-for select to authenticated
-using (user_id = auth.uid() or public.is_admin());
+for select to authenticated using (user_id = auth.uid() or public.is_admin());
 
 drop policy if exists "Admins can manage staff profiles" on public.staff_profiles;
 create policy "Admins can manage staff profiles" on public.staff_profiles
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 alter table public.orders
   add column if not exists assigned_courier_id uuid references auth.users(id) on delete set null,
@@ -276,136 +254,72 @@ alter table public.orders
   add column if not exists assigned_at timestamptz,
   add column if not exists completed_at timestamptz;
 
-create index if not exists orders_assigned_courier_idx
-on public.orders(assigned_courier_id);
+create index if not exists orders_assigned_courier_idx on public.orders(assigned_courier_id);
 
--- Replace the original broad authenticated policies with role-aware policies.
 drop policy if exists "Admins can manage payment settings" on public.payment_settings;
 drop policy if exists "Authenticated admins can manage payment settings" on public.payment_settings;
 create policy "Admins can manage payment settings" on public.payment_settings
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admins can manage restaurants" on public.restaurants;
 drop policy if exists "Authenticated admins can manage restaurants" on public.restaurants;
 create policy "Admins can manage restaurants" on public.restaurants
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admins can manage menu items" on public.menu_items;
 drop policy if exists "Authenticated admins can manage menu items" on public.menu_items;
 create policy "Admins can manage menu items" on public.menu_items
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admins can manage orders" on public.orders;
 drop policy if exists "Authenticated admins can manage orders" on public.orders;
 create policy "Admins can manage orders" on public.orders
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admins can manage order items" on public.order_items;
 drop policy if exists "Authenticated admins can manage order items" on public.order_items;
 create policy "Admins can manage order items" on public.order_items
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Admins can manage order tracking" on public.order_tracking;
 drop policy if exists "Authenticated admins can manage order tracking" on public.order_tracking;
 create policy "Admins can manage order tracking" on public.order_tracking
-for all to authenticated
-using (public.is_admin()) with check (public.is_admin());
+for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
--- Couriers can see unassigned orders ready for delivery and their own jobs.
 drop policy if exists "Couriers can view delivery orders" on public.orders;
 create policy "Couriers can view delivery orders" on public.orders
-for select to authenticated
-using (
-  public.is_courier()
-  and (
-    (assigned_courier_id is null and status in ('confirmed','preparing'))
-    or assigned_courier_id = auth.uid()
-  )
+for select to authenticated using (
+  public.is_courier() and ((assigned_courier_id is null and status in ('confirmed','preparing')) or assigned_courier_id = auth.uid())
 );
 
 drop policy if exists "Couriers can view delivery items" on public.order_items;
 create policy "Couriers can view delivery items" on public.order_items
-for select to authenticated
-using (
-  public.is_courier()
-  and exists (
-    select 1 from public.orders o
-    where o.id = order_id
-      and (
-        (o.assigned_courier_id is null and o.status in ('confirmed','preparing'))
-        or o.assigned_courier_id = auth.uid()
-      )
-  )
+for select to authenticated using (
+  public.is_courier() and exists (select 1 from public.orders o where o.id = order_id and ((o.assigned_courier_id is null and o.status in ('confirmed','preparing')) or o.assigned_courier_id = auth.uid()))
 );
 
--- Only these server-side functions can claim or complete a delivery.
--- The update is conditional, so two couriers cannot claim the same order.
 create or replace function public.courier_claim_order(p_order_id uuid)
-returns public.orders
-language plpgsql
-security definer
-set search_path = public
+returns public.orders language plpgsql security definer set search_path = public
 as $$
-declare
-  v_order public.orders;
+declare v_order public.orders;
 begin
-  if not public.is_courier() then
-    raise exception 'Only an active courier can claim orders';
-  end if;
-
-  update public.orders
-  set assigned_courier_id = auth.uid(),
-      assigned_courier_name = (
-        select display_name from public.staff_profiles
-        where user_id = auth.uid()
-      ),
-      assigned_at = now(),
-      status = 'delivering',
-      updated_at = now()
-  where id = p_order_id
-    and assigned_courier_id is null
-    and status in ('confirmed','preparing')
-  returning * into v_order;
-
-  if not found then
-    raise exception 'This order is no longer available';
-  end if;
-
+  if not public.is_courier() then raise exception 'Only an active courier can claim orders'; end if;
+  update public.orders set assigned_courier_id = auth.uid(), assigned_courier_name = (select display_name from public.staff_profiles where user_id = auth.uid()), assigned_at = now(), status = 'delivering', updated_at = now()
+  where id = p_order_id and assigned_courier_id is null and status in ('confirmed','preparing') returning * into v_order;
+  if not found then raise exception 'This order is no longer available'; end if;
   return v_order;
 end;
 $$;
 
 create or replace function public.courier_complete_order(p_order_id uuid)
-returns public.orders
-language plpgsql
-security definer
-set search_path = public
+returns public.orders language plpgsql security definer set search_path = public
 as $$
-declare
-  v_order public.orders;
+declare v_order public.orders;
 begin
-  if not public.is_courier() then
-    raise exception 'Only an active courier can complete orders';
-  end if;
-
-  update public.orders
-  set status = 'completed',
-      completed_at = now(),
-      updated_at = now()
-  where id = p_order_id
-    and assigned_courier_id = auth.uid()
-    and status = 'delivering'
-  returning * into v_order;
-
-  if not found then
-    raise exception 'This order is not assigned to you or is already completed';
-  end if;
-
+  if not public.is_courier() then raise exception 'Only an active courier can complete orders'; end if;
+  update public.orders set status = 'completed', completed_at = now(), updated_at = now()
+  where id = p_order_id and assigned_courier_id = auth.uid() and status = 'delivering' returning * into v_order;
+  if not found then raise exception 'This order is not assigned to you or is already completed'; end if;
   return v_order;
 end;
 $$;
@@ -415,25 +329,49 @@ revoke all on function public.courier_complete_order(uuid) from public;
 grant execute on function public.courier_claim_order(uuid) to authenticated;
 grant execute on function public.courier_complete_order(uuid) to authenticated;
 
--- Keep updated_at current for courier profile edits.
 drop trigger if exists staff_profiles_set_updated_at on public.staff_profiles;
-create trigger staff_profiles_set_updated_at before update on public.staff_profiles
-for each row execute procedure public.set_updated_at();
+create trigger staff_profiles_set_updated_at before update on public.staff_profiles for each row execute procedure public.set_updated_at();
 
--- Realtime is required for the customer app to receive status updates.
+-- Browser push subscriptions.
+create table if not exists public.push_subscriptions (
+  id bigint generated by default as identity primary key,
+  endpoint text not null,
+  p256dh text not null,
+  auth text not null,
+  role text not null check (role in ('admin','courier','customer')),
+  user_id uuid references auth.users(id) on delete cascade,
+  order_id uuid references public.orders(id) on delete cascade,
+  active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.push_subscriptions enable row level security;
+
+drop policy if exists "Staff can manage own push subscriptions" on public.push_subscriptions;
+create policy "Staff can manage own push subscriptions" on public.push_subscriptions
+for all to authenticated
+using ((public.is_admin() or public.is_courier()) and user_id = auth.uid())
+with check ((public.is_admin() or public.is_courier()) and user_id = auth.uid() and role in ('admin','courier'));
+
+drop policy if exists "Customers can create push subscriptions" on public.push_subscriptions;
+create policy "Customers can create push subscriptions" on public.push_subscriptions
+for insert to anon, authenticated
+with check (role = 'customer' and user_id is null and order_id is not null);
+
+drop trigger if exists push_subscriptions_set_updated_at on public.push_subscriptions;
+create trigger push_subscriptions_set_updated_at before update on public.push_subscriptions for each row execute procedure public.set_updated_at();
+
 do $$
 begin
   alter publication supabase_realtime add table public.order_tracking;
-exception when duplicate_object then
-  null;
+exception when duplicate_object then null;
 end;
 $$;
 
--- Realtime delivery updates for the courier dashboard.
 do $$
 begin
   alter publication supabase_realtime add table public.staff_profiles;
-exception when duplicate_object then
-  null;
+exception when duplicate_object then null;
 end;
 $$;
