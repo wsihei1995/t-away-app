@@ -3,7 +3,7 @@
 window.TAWAY_SUPABASE_URL = 'https://dovqihtmjmkbjyilboiz.supabase.co';
 window.TAWAY_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_tDGKQqEpfEUGhlQ8HHEflw_7DEp8TLl';
 // Safe to expose in the browser; the matching private key stays in Supabase Edge Function Secrets.
-window.TAWAY_VAPID_PUBLIC_KEY = 'BFvZ0pP2pzQ7MIDOW0_RVz6e_8Hm-7Bi4NzgzvoLlWaWkt7Jo0KLItLMLCJpy9LexEYpCuo2jFsR2KAWeDzd1SI';
+window.TAWAY_VAPID_PUBLIC_KEY = 'BECiq-_FBn8dmU6ZUKsDNnoJDXAlcuYHhYHseXJwPLwwg37nPvI9pVVCh6b3u46_SskrIQB7LXZJPp6qnYvjg4k';
 (function () {
   const manifest = document.createElement('link');
   manifest.rel = 'manifest';
