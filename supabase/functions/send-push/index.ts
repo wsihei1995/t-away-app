@@ -14,7 +14,7 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const configuredSecretKeys = Deno.env.get('SUPABASE_SECRET_KEYS');
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ||
   (configuredSecretKeys ? JSON.parse(configuredSecretKeys).default : '');
-const webhookSecret = Deno.env.get('PUSH_WEBHOOK_SECRET') || '';
+const webhookSecret = (Deno.env.get('PUSH_WEBHOOK_SECRET') || '').trim();
 const vapidPublicKey = cleanBase64Secret('VAPID_PUBLIC_KEY');
 const vapidPrivateKey = cleanBase64Secret('VAPID_PRIVATE_KEY');
 const vapidSubject = (Deno.env.get('VAPID_SUBJECT') || 'mailto:admin@example.com')
@@ -82,7 +82,15 @@ async function sendTo(subscriptions: any[], notification: any) {
 
 Deno.serve(async request => {
   if (request.method !== 'POST') return json({ error: 'POST required' }, 405);
-  if (!webhookSecret || request.headers.get('x-push-secret') !== webhookSecret) {
+  const receivedPushSecret = (request.headers.get('x-push-secret') || '').trim();
+  console.info('Webhook auth check', {
+    receivedHeader: Boolean(receivedPushSecret),
+    receivedHeaderLength: receivedPushSecret.length,
+    configuredSecret: Boolean(webhookSecret),
+    configuredSecretLength: webhookSecret.length,
+    authorizationHeader: Boolean(request.headers.get('authorization'))
+  });
+  if (!webhookSecret || receivedPushSecret !== webhookSecret) {
     return json({ error: 'Unauthorized' }, 401);
   }
   if (!vapidConfigured) return json({ error: 'VAPID secrets are not configured or invalid' }, 500);
