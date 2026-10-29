@@ -100,8 +100,22 @@
     addPrompt('開啟訂單通知，餐廳確認及配送狀態更新時提醒你。', '開啟訂單通知', () => subscribe('customer', null, orderId));
   }
 
+  function watchCustomerOrders() {
+    const path = location.pathname;
+    if (!(path.endsWith('/index.html') || path.endsWith('/'))) return;
+    let latest;
+    try { latest = JSON.parse(localStorage.getItem('taway_orders_v1') || '[]')[0]; } catch (_) { return; }
+    if (!latest?.trackingToken || !latest.createdAt || Date.now() - Date.parse(latest.createdAt) > 10 * 60 * 1000) return;
+    const key = `taway_push_prompted_${latest.code}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    showCustomerPrompt(latest.trackingToken);
+  }
+
   window.TAWAY_PUSH = { supported, register, subscribe, showCustomerPrompt, syncStaff };
   register().catch(console.error);
+  setTimeout(watchCustomerOrders, 1200);
+  setInterval(watchCustomerOrders, 2000);
   getClient().then(db => {
     if (!db) return;
     db.auth.onAuthStateChange(() => setTimeout(syncStaff, 0));
