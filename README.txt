@@ -4,7 +4,6 @@
 - `index.html`：客人外賣前台
 - `admin.html`：餐廳、菜單、付款及訂單管理後台
 - `courier.html`：送遞員登入、接單及完成配送後台
-- `manifest.json`、`sw.js`、`push.js`：PWA 及手機推送通知
 - `supabase-config.js`：瀏覽器用 Supabase Project URL 及 Publishable key（不可放 secret/service role key）
 
 ## 雲端版本使用方法
@@ -55,45 +54,6 @@ on conflict (user_id) do update set
 
 如要停用送遞員，將該筆 `staff_profiles.active` 改為 `false`；停用後不能再登入接單，但已接的訂單資料仍會保留。
 
-## 手機推送通知
-本專案已加入 PWA 及 Web Push 基礎檔案：`manifest.json`、`sw.js`、`push.js`。管理員、送遞員及客人都可以在自己的手機開啟通知權限。
-
-要真正發送背景推送，還需要部署 `supabase/functions/send-push/index.ts`：
-
-```bash
-supabase functions deploy send-push --no-verify-jwt
-supabase secrets set \\
-  VAPID_PUBLIC_KEY='你的 VAPID 公開金鑰' \\
-  VAPID_PRIVATE_KEY='你的 VAPID 私密金鑰' \\
-  VAPID_SUBJECT='mailto:你的管理員 Email' \\
-  PUSH_WEBHOOK_SECRET='自訂一段長隨機字串'
-```
-
-`SUPABASE_URL` 及 `SUPABASE_SERVICE_ROLE_KEY` 應由 Supabase Edge Function 環境提供；不要把 service-role key 放入前台或 GitHub。
-
-在 Supabase Dashboard → Database → Webhooks 建立兩個 Webhook，網址都是：
-
-```text
-https://dovqihtmjmkbjyilboiz.supabase.co/functions/v1/send-push
-```
-
-兩個 Webhook 都要加入 Header：
-
-```text
-x-push-secret: 與 PUSH_WEBHOOK_SECRET 相同的字串
-```
-
-觸發設定：
-1. `public.orders` 的 `INSERT`
-2. `public.orders` 的 `UPDATE`
-
-推送流程：
-- 新訂單 → 通知管理員
-- 餐廳確認／開始製作 → 通知可接單送遞員
-- 送遞員接單及訂單狀態變更 → 通知客人及相關工作人員
-
-VAPID 公開金鑰可以放在 `supabase-config.js`；VAPID 私密金鑰只放在 Edge Function Secrets。iPhone 必須先用 Safari 將 T-AWAY 加到主畫面，再開啟通知權限；Android 可用 Chrome／PWA 開啟通知。
-
 ## 餐廳及菜式分類
 前台支援飯類、麵食、飲品、小食、甜品等分類。每間餐廳的菜式可以有自己的分類，客人打開餐廳菜單後可以按分類篩選；後台管理員在編輯餐廳時，可以修改餐廳分類，以及逐項修改每款菜式的分類，也可以輸入自訂分類。
 
@@ -117,6 +77,51 @@ VAPID 公開金鑰可以放在 `supabase-config.js`；VAPID 私密金鑰只放�
 前台已加入支付寶、微信支付、轉數快三種付款方式。管理員可以在後台付款設定輸入支付寶／微信 QR Code 圖片網址及 FPS 電話，客人選擇付款方式後會看到相應資料。
 
 現階段是「客人自行付款＋管理員人工確認」流程，未會自動驗證款項，也不是正式付款 API。正式收款需要商戶帳戶、支付服務商及 Supabase Edge Function；個人支付寶不適合直接接入公開網站。
+
+## 手機推送通知
+本專案已加入 PWA 及 Web Push 基礎檔案：`manifest.json`、`sw.js`、`push.js`。管理員、送遞員及客人都可以在自己的手機開啟通知權限。
+
+要真正發送背景推送，還需要部署 `supabase/functions/send-push/index.ts`。先在自己的安全環境產生一對 VAPID 金鑰：
+
+```bash
+pnpm dlx web-push generate-vapid-keys
+```
+
+將產生的 **公開金鑰** 放入 `supabase-config.js` 的 `TAWAY_VAPID_PUBLIC_KEY`，將 **私密金鑰** 只放入 Supabase Edge Function Secrets，並不要把私密金鑰提交到 GitHub。然後部署：
+
+```bash
+supabase functions deploy send-push --no-verify-jwt
+supabase secrets set \\
+  VAPID_PUBLIC_KEY='你的 VAPID 公開金鑰' \\
+  VAPID_PRIVATE_KEY='你的 VAPID 私密金鑰' \\
+  VAPID_SUBJECT='mailto:你的管理員 Email' \\
+  PUSH_WEBHOOK_SECRET='自訂一段長隨機字串'
+```
+
+`SUPABASE_URL` 及 Supabase 內建的管理密鑰由 Edge Function 環境提供；目前程式同時支援舊的 `SUPABASE_SERVICE_ROLE_KEY`，以及新格式的 `SUPABASE_SECRET_KEYS`。不要把任何管理密鑰放入前台或 GitHub。
+
+在 Supabase Dashboard → Database → Webhooks 建立兩個 Webhook，網址都是：
+
+```text
+https://dovqihtmjmkbjyilboiz.supabase.co/functions/v1/send-push
+```
+
+兩個 Webhook 都要加入 Header：
+
+```text
+x-push-secret: 與 PUSH_WEBHOOK_SECRET 相同的字串
+```
+
+觸發設定：
+1. `public.orders` 的 `INSERT`
+2. `public.orders` 的 `UPDATE`
+
+推送流程：
+- 新訂單 → 通知管理員
+- 餐廳確認／開始製作 → 通知可接單送遞員
+- 送遞員接單及訂單狀態變更 → 通知客人及相關工作人員
+
+VAPID 公開金鑰可以放在 `supabase-config.js`；VAPID 私密金鑰只放在 Edge Function Secrets。iPhone 必須先用 Safari 將 T-AWAY 加到主畫面，再開啟通知權限；Android 可用 Chrome／PWA 開啟通知。
 
 ## 權限及安全
 - 公開前台可以讀取上架餐廳／菜單及建立訂單，但不能讀取其他訂單的完整資料。
