@@ -1,1 +1,134 @@
-LyogVC1BV0FZIFdlYiBQdXNoIGNsaWVudCBoZWxwZXIuIFRoZSBWQVBJRCBwdWJsaWMga2V5IGlzIHNhZmUgdG8gZXhwb3NlLiAqLwooZnVuY3Rpb24gKCkgewogIGNvbnN0IHB1YmxpY0tleSA9IHdpbmRvdy5UQVdBWV9WQVBJRF9QVUJMSUNfS0VZIHx8ICcnOwogIGNvbnN0IHB1YmxpY0tleVN0b3JhZ2VLZXkgPSAndGF3YXlfcHVzaF92YXBpZF9wdWJsaWNfa2V5X3YxJzsKICBsZXQgcmVnaXN0cmF0aW9uUHJvbWlzZSA9IG51bGw7CiAgbGV0IHB1c2hEYiA9IG51bGw7CiAgbGV0IHN0YWZmVXNlcklkID0gbnVsbDsKICBsZXQgc3RhZmZSb2xlID0gbnVsbDsKCiAgZnVuY3Rpb24gc3VwcG9ydGVkKCkgewogICAgcmV0dXJuIEJvb2xlYW4ocHVibGljS2V5ICYmICdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IgJiYgJ1B1c2hNYW5hZ2VyJyBpbiB3aW5kb3cgJiYgJ05vdGlmaWNhdGlvbicgaW4gd2luZG93KTsKICB9CgogIGZ1bmN0aW9uIHVybEJhc2U2NFRvVWludDhBcnJheSh2YWx1ZSkgewogICAgY29uc3QgcGFkZGluZyA9ICc9Jy5yZXBlYXQoKDQgLSB2YWx1ZS5sZW5ndGggJSA0KSAlIDQpOwogICAgY29uc3QgYmFzZTY0ID0gKHZhbHVlICsgcGFkZGluZykucmVwbGFjZSgvLS9nLCAnKycpLnJlcGxhY2UoL18vZywgJy8nKTsKICAgIGNvbnN0IHJhdyA9IGF0b2IoYmFzZTY0KTsKICAgIHJldHVybiBVaW50OEFycmF5LmZyb20oWy4uLnJhd10ubWFwKGNoYXIgPT4gY2hhci5jaGFyQ29kZUF0KDApKSk7CiAgfQoKICBhc3luYyBmdW5jdGlvbiByZWdpc3RlcigpIHsKICAgIGlmICghKCdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IpKSByZXR1cm4gbnVsbDsKICAgIGlmICghcmVnaXN0cmF0aW9uUHJvbWlzZSkgcmVnaXN0cmF0aW9uUHJvbWlzZSA9IG5hdmlnYXRvci5zZXJ2aWNlV29ya2VyLnJlZ2lzdGVyKCcuL3N3LmpzJywgeyBzY29wZTogJy4vJyB9KTsKICAgIHJldHVybiByZWdpc3RyYXRpb25Qcm9taXNlOwogIH0KCiAgYXN5bmMgZnVuY3Rpb24gZ2V0Q2xpZW50KCkgewogICAgaWYgKHB1c2hEYikgcmV0dXJuIHB1c2hEYjsKICAgIGlmICghd2luZG93LnN1cGFiYXNlPy5jcmVhdGVDbGllbnQgfHwgIXdpbmRvdy5UQVdBWV9TVVBBQkFTRV9VUkwgfHwgIXdpbmRvdy5UQVdBWV9TVVBBQkFTRV9QVUJMSVNIQUJMRV9LRVkpIHJldHVybiBudWxsOwogICAgcHVzaERiID0gd2luZG93LnN1cGFiYXNlLmNyZWF0ZUNsaWVudCh3aW5kb3cuVEFXQVlfU1VQQUJBU0VfVVJMLCB3aW5kb3cuVEFXQVlfU1VQQUJBU0VfUFVCTElTSEFCTEVfS0VZKTsKICAgIHJldHVybiBwdXNoRGI7CiAgfQoKICBhc3luYyBmdW5jdGlvbiBzdWJzY3JpYmUocm9sZSwgdXNlcklkLCBvcmRlcklkKSB7CiAgICBpZiAoIXN1cHBvcnRlZCgpKSByZXR1cm4geyBvazogZmFsc2UsIHJlYXNv bjogJ3Vuc3VwcG9ydGVkJyB9OwogICAgY29uc3QgZGIgPSBhd2FpdCBnZXRDbGllbnQoKTsKICAgIGlmICghZGIpIHJldHVybiB7IG9rOiBmYWxzZSwgcmVhc29uOiAnZGF0YWJhc2UnIH07CiAgICBjb25zdCBwZXJtaXNzaW9uID0gTm90aWZpY2F0aW9uLnBlcm1pc3Npb24gPT09ICdncmFudGVkJyA/ICdncmFudGVkJyA6IGF3YWl0IE5vdGlmaWNhdGlvbi5yZXF1ZXN0UGVybWlzc2lvbigpOwogICAgaWYgKHBlcm1pc3Npb24gIT09ICdncmFudGVkJykgcmV0dXJuIHsgb2s6IGZhbHNlLCByZWFzb246ICdwZXJtaXNzaW9uJyB9OwogICAgY29uc3QgcmVnaXN0cmF0aW9uID0gYXdhaXQgcmVnaXN0ZXIoKTsKICAgIGxldCBzdWJzY3JpcHRpb24gPSBhd2FpdCByZWdpc3RyYXRpb24ucHVzaE1hbmFnZXIuZ2V0U3Vic2NyaXB0aW9uKCk7CiAgICBsZXQgc2F2ZWRQdWJsaWNLZXkgPSAnJzsKICAgIHRyeSB7IHNhdmVkUHVibGljS2V5ID0gbG9jYWxTdG9yYWdlLmdldEl0ZW0ocHVibGljS2V5U3RvcmFnZUtleSkgfHwgJyc7IH0gY2F0Y2ggKF8pIHt9CiAgICAvLyBBIGJyb3dzZXIga2VlcHMgaXRzIG9sZCBQdXNoU3Vic2NyaXB0aW9uIHdoZW4gdGhlIFZBUElEIHB1YmxpYyBrZXkgY2hhbmdlcy4KICAgIC8vIFJlcGxhY2UgaXQgb25jZSBzbyB0aGUgc2VydmVyIG5ldmVyIHJlY2VpdmVzIGEgc3Vic2NyaXB0aW9uIGNyZWF0ZWQgZm9yIGFub3RoZXIga2V5LgogICAgaWYgKHN1YnNjcmlwdGlvbiAmJiBzYXZlZFB1YmxpY0tleSAhPT0gcHVibGljS2V5KSB7CiAgICAgIHRyeSB7IGF3YWl0IHN1YnNjcmlwdGlvbi51bnN1YnNjcmliZSgpOyB9IGNhdGNoIChlcnJvcikgeyBjb25zb2xlLndhcm4oJ29sZCBwdXNoIHN1YnNjcmlwdGlvbiBjbGVhbnVwIGZhaWxlZCcsIGVycm9yKTsgfQogICAgICBzdWJzY3JpcHRpb24gPSBudWxsOwogICAgfQogICAgaWYgKCFzdWJzY3JpcHRpb24pIHsKICAgICAgc3Vic2NyaXB0aW9uID0gYXdhaXQgcmVnaXN0cmF0aW9uLnB1c2hNYW5hZ2VyLnN1YnNjcmliZSh7CiAgICAgICAgdXNlclZpc2libGVPbmx5OiB0cnVlLAogICAgICAgIGFwcGxpY2F0aW9uU2VydmVyS2V5OiB1cmxCYXNlNjRUb1VpbnQ4QXJyYXkocHVibGljS2V5KQogICAgICB9KTsKICAgIH0KICAgIGNvbnN0IGpzb24gPSBzdWJzY3JpcHRpb24udG9KU09OKCk7CiAgICBjb25zdCByb3cgPSB7CiAgICAgIGVuZHBvaW50OiBqc29uLmVuZHBvaW50LAogICAgICBwMjU2ZGg6IGpzb24ua2V5cz8ucDI1NmRoLAogICAgICBhdXRoOiBqc29uLmtleXM/LmF1dGgsCiAgICAgIHJvbGUsCiAgICAgIHVzZXJfaWQ6IHVzZXJJZCB8fCBudWxsLAogICAgICBvcmRlcl9pZDogb3JkZXJJZCB8fCBudWxsLAogICAgICBhY3RpdmU6IHRydWUKICAgIH07CiAgICBjb25zdCB7IGVycm9yIH0gPSBhd2FpdCBkYi5mcm9tKCdwdXNoX3N1YnNjcmlwdGlvbnMnKS5pbnNlcnQocm93KTsKICAgIGlm (ZXJyb3IpIHsKICAgICAgY29uc29sZS5lcnJvcigncHVzaCBzdWJzY3JpcHRpb24gc2F2ZSBmYWlsZWQnLCBlcnJvcik7CiAgICAgIHJldHVybiB7IG9rOiBmYWxzZSwgcmVhc29uOiAnc2F2ZScsIGVycm9yIH07CiAgICB9CiAgICB0cnkgeyBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShwdWJsaWNLZXlTdG9yYWdlS2V5LCBwdWJsaWNLZXkpOyB9IGNhdGNoIChfKSB7fQogICAgcmV0dXJuIHsgb2s6IHRydWUgfTsKICB9CgogIGZ1bmN0aW9uIHJlbW92ZVByb21wdCgpIHsKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd0YXdheVB1c2hQcm9tcHQnKT8ucmVtb3ZlKCk7CiAgfQoKICBmdW5jdGlvbiBhZFBQcm9tcHQobWVzc2FnZSwgYnV0dG9uVGV4dCwgaGFuZGxlcikgewogICAgcmVtb3ZlUHJvbXB0KCk7CiAgICBjb25zdCBib3ggPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTsKICAgIGJveC5pZCA9ICd0YXdheVB1c2hQcm9tcHQnOwogICAgYm94LnN0eWxlLmNzc1RleHQgPSAncG9zaXRpb246Zml4ZWQ7ei1pbmRleDo5OTk5O2xlZnQ6NTAlO3RvcDoxNHB4O3RyYW5zZm9ybTp0cmFuc2xhdGVYKC01MCUpO3dpZHRoOm1pbig0NDBweCxjYWxjKDEwMCUgLSAyNHB4KSk7cGFkZGluZzoxMnB4IDE0cHg7Ym9yZGVyLXJhZGl1czo1cHg7YmFja2dyb3VuZDojMTAyMzFkO2NvbG9yOiNmZmY7Ym94LXNoYWRvdzowIDEycHggMzBweCAjMTAyMzFkNDQ7ZGlzcGxheTpmbGV4O2FsaWduLWl0ZW1zOmNlbnRlcjtnYXA6MTBweDtmb250OjEycHggLWFwcGxlLXN5c3RlbSxCbGlua01hY1N5c3RlbUZvbnQsIlBpbmdGYW5nIEhLIiwiTWljcm9zb2Z0IEpoZW5nSGVpIixzYW5zLXNlcmlmJzsKICAgIGJveC5pbm5lckhUTUwgPSBgPHNwYW4gc3R5bGU9ImZsZXg6MTtsaW5lLWhlaWdodDoxLjQ1Ij4ke21lc3NhZ2V9PC9zcGFuPjxidXR0b24gaWQ9InRhd2F5UHVzaEVuYWJsZSIgc3R5bGU9InBhZGRpbmc6OHB4IDEwcHg7Ym9yZGVyOjA7Ym9yZGVyLXJhZGl1czo5cHg7YmFja2dyb3VuZDojYmJmMDVkO2NvbG9yOiMxMDIzMWQ7Zm9udC13ZWlnaHQ6OTAwO3doaXRlLXNwYWNlOm5vd3JhcCI+JHtidXR0b25UZXh0fTwvYnV0dG9uPjxidXR0b24gaWQ9InRhd2F5UHVzaENsb3NlIiBhcmlhLWxhYmVsPSLpl5zplokiIHN0eWxlPSJwYWRkaW5nOjRweCA3cHg7Ym9yZGVyOjA7YmFja2dyb3VuZDp0cmFuc3BhcmVudDtjb2xvcjojYjhkMGJkO2ZvbnQtc2l6ZToxNnB4Ij7DlzwvYnV0dG9uPmA7CiAgICBkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGJveCk7CiAgICBib3gucXVlcnlTZWxlY3RvcignI3Rhd2F5UHVzaENsb3NlJykub25jbGljayA9IHJlbW92ZVByb21wdDsKICAgIGJveC5xdWVyeVNlbGVjdG9yKCcjdGF3YXlQdXNoRW5hYmxlJykub25jbGljayA9IGFzeW5jICgpID0+IHsKICAgICAgY29uc3QgYnV0dG9uID0gYm94LnF1ZXJ5U2VsZWN0b3IoJyN0YXdheVB1c2hFbmFibGUnKTsKICAgICAgYnV0dG9uLmRpc2FibGVkID0gdHJ1ZTsKICAgICAgYnV0dG9uLnRleHRDb250ZW50ID0gJ+ioreWumuS4reKApic7CiAgICAgIHRyeSB7IGF3YWl0IGhhbmRsZXIoKTsgfSBmaW5hbGx5IHsgcmVtb3ZlUHJvbXB0KCk7IH0KICAgIH07CiAgfQoKICBhc3luYyBmdW5jdGlvbiBzeW5jU3RhZmYoKSB7CiAgICBjb25zdCBkYiA9IGF3YWl0IGdldENsaWVudCgpOwogICAgaWYgKCFkYikgcmV0dXJuOwogICAgY29uc3QgeyBkYXRhIH0gPSBhd2FpdCBkYi5hdXRoLmdldFVzZXIoKTsKICAgIGNvbnN0IHVzZXIgPSBkYXRhPy51c2VyOwogICAgaWYgKCF1c2VyIHx8IHVzZXIuaWQgPT09IHN0YWZmVXNlcklkKSByZXR1cm47CiAgICBzdGFmZlVzZXJJZCA9IHVzZXIuaWQ7CiAgICBjb25zdCB7IGRhdGE6IHByb2ZpbGUgfSA9IGF3YWl0IGRiLmZyb20oJ3N0YWZmX3Byb2ZpbGVzJykuc2VsZWN0KCdyb2xlLGFjdGl2ZScpLmVxKCd1c2VyX2lkJywgdXNlci5pZCkubWF5YmVTaW5nbGUoKTsKICAgIGlmICghcHJvZmlsZT8uYWN0aXZlIHx8ICFbJ2FkbWluJywgJ2NvdXJpZXInXS5pbmNsdWRlcyhwcm9maWxlLnJvbGUpKSByZXR1cm47CiAgICBzdGFmZlJvbGUgPSBwcm9maWxlLnJvbGU7CiAgICBhZGRQcm9tcHQocHJvZmlsZS5yb2xlID09PSAnYWRtaW4nID8gJ+mWi+WVn+mAmuefpe+8jOWuouS6uuiQveWWruaZguWNs+aZguaPkOmGkuS9oOOAgicgOiAn6ZaL5ZWf6YCa55+l77yM5pyJ5Y+v5o6l6YWN6YCB5pmC5Y2z5pmC5o+Q6YaS5L2g44CCJywgJ+mWi+WVn+mAmuefpScsICgpID0+IHN1YnNjcmliZShzdGFmZlJvbGUsIHVzZXIuaWQsIG51bGwpKTsKICB9CgogIGZ1bmN0aW9uIHNob3dDdXN0b21lclByb21wdChvcmRlcklkKSB7CiAgICBpZiAoIXN1cHBvcnRlZCgpKSByZXR1cm47CiAgICBhZGRQcm9tcHQoJ+mWi+WVn+ioguWWrumAmuefpe+8jOmkkOW7s+eiuuiqjeWPiumFjemAgeeLgOaFi+abtOaWsOaZguaPkOmGkuS9oOOAgicsICfplovllZ/oqILllq7pgJrnn6UnLCAoKSA9PiBzdWJzY3JpYmUoJ2N1c3RvbWVyJywgbnVsbCwgb3JkZXJJZCkpOwogIH0KCiAgZnVuY3Rpb24gd2F0Y2hDdXN0b21lck9yZGVycygpIHsKICAgIGNvbnN0IHBhdGggPSBsb2NhdGlvbi5wYXRobmFtZTsKICAgIGlmICghKHBhdGguZW5kc1dpdGgoJy9pbmRleC5odG1sJykgfHwgcGF0aC5lbmRzV2l0aCgnLycpKSkgcmV0dXJuOwogICAgbGV0IGxhdGVzdDsKICAgIHRyeSB7IGxhdGVzdCA9IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oJ3Rhd2F5X29yZGVyc192MScpIHx8ICdbXScpWzBdOyB9IGNhdGNoIChfKSB7IHJldHVybjsgfQogICAgaWYgKCFsYXRlc3Q/LnRyYWNraW5nVG9rZW4gfHwgIWxhdGVzdC5jcmVhdGVkQXQgfHwgRGF0ZS5ub3coKSAtIERhdGUucGFyc2UobGF0ZXN0LmNyZWF0ZWRBdCkgPiAxMCAqIDYwICogMTAwMCkgcmV0dXJuOwogICAgY29uc3Qga2V5ID0gYHRhd2F5X3B1c2hfcHJvbXB0ZWRfJHtsYXRlc3QuY29kZX1gOwogICAgaWYgKHNlc3Npb25TdG9yYWdlLmdldEl0ZW0oa2V5KSkgcmV0dXJuOwogICAgc2Vzc2lvblN0b3JhZ2Uuc2V0SXRlbShrZXksICcxJyk7CiAgICBzaG93Q3VzdG9tZXJQcm9tcHQobGF0ZXN0LnRyYWNraW5nVG9rZW4pOwogIH0KCiAgd2luZG93LlRBV0FZX1BVU0ggPSB7IHN1cHBvcnRlZCwgcmVnaXN0ZXIsIHN1YnNjcmliZSwgc2hvd0N1c3RvbWVyUHJvbXB0LCBzeW5jU3RhZmYgfTsKICByZWdpc3RlcigpLmNhdGNoKGNvbnNvbGUuZXJyb3IpOwogIHNldFRpbWVvdXQod2F0Y2hDdXN0b21lck9yZGVycywgMTIwMCk7CiAgc2V0SW50ZXJ2YWwod2F0Y2hDdXN0b21lck9yZGVycywgMjAwMCk7CiAgZ2V0Q2xpZW50KCkudGhlbihkYiA9PiB7CiAgICBpZiAoIWRiKSByZXR1cm47CiAgICBkYi5hdXRoLm9uQXV0aFN0YXRlQ2hhbmdlKCgpID0+IHNldFRpbWVvdXQoc3luY1N0YWZmLCAwKSk7CiAgICBzZXRUaW1lb3V0KHN5bmNTdGFmZiwgNTAwKTsKICB9KTsKfSkoKTsK
+/* T-AWAY Web Push client helper. The VAPID public key is safe to expose. */
+(function () {
+  const publicKey = window.TAWAY_VAPID_PUBLIC_KEY || '';
+  const publicKeyStorageKey = 'taway_push_vapid_public_key_v1';
+  let registrationPromise = null;
+  let pushDb = null;
+  let staffUserId = null;
+  let staffRole = null;
+
+  function supported() {
+    return Boolean(publicKey && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
+  }
+
+  function urlBase64ToUint8Array(value) {
+    const padding = '='.repeat((4 - value.length % 4) % 4);
+    const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    return Uint8Array.from([...raw].map(char => char.charCodeAt(0)));
+  }
+
+  async function register() {
+    if (!('serviceWorker' in navigator)) return null;
+    if (!registrationPromise) registrationPromise = navigator.serviceWorker.register('./sw.js', { scope: './' });
+    return registrationPromise;
+  }
+
+  async function getClient() {
+    if (pushDb) return pushDb;
+    if (!window.supabase?.createClient || !window.TAWAY_SUPABASE_URL || !window.TAWAY_SUPABASE_PUBLISHABLE_KEY) return null;
+    pushDb = window.supabase.createClient(window.TAWAY_SUPABASE_URL, window.TAWAY_SUPABASE_PUBLISHABLE_KEY);
+    return pushDb;
+  }
+
+  async function subscribe(role, userId, orderId) {
+    if (!supported()) return { ok: false, reason: 'unsupported' };
+    const db = await getClient();
+    if (!db) return { ok: false, reason: 'database' };
+    const permission = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+    if (permission !== 'granted') return { ok: false, reason: 'permission' };
+    const registration = await register();
+    let subscription = await registration.pushManager.getSubscription();
+    let savedPublicKey = '';
+    try { savedPublicKey = localStorage.getItem(publicKeyStorageKey) || ''; } catch (_) {}
+    // A browser keeps its old PushSubscription when the VAPID public key changes.
+    // Replace it once so the server never receives a subscription created for another key.
+    if (subscription && savedPublicKey !== publicKey) {
+      try { await subscription.unsubscribe(); } catch (error) { console.warn('old push subscription cleanup failed', error); }
+      subscription = null;
+    }
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+    }
+    const json = subscription.toJSON();
+    const row = {
+      endpoint: json.endpoint,
+      p256dh: json.keys?.p256dh,
+      auth: json.keys?.auth,
+      role,
+      user_id: userId || null,
+      order_id: orderId || null,
+      active: true
+    };
+    const { error } = await db.from('push_subscriptions').insert(row);
+    if (error) {
+      console.error('push subscription save failed', error);
+      return { ok: false, reason: 'save', error };
+    }
+    try { localStorage.setItem(publicKeyStorageKey, publicKey); } catch (_) {}
+    return { ok: true };
+  }
+
+  function removePrompt() {
+    document.getElementById('tawayPushPrompt')?.remove();
+  }
+
+  function addPrompt(message, buttonText, handler) {
+    removePrompt();
+    const box = document.createElement('div');
+    box.id = 'tawayPushPrompt';
+    box.style.cssText = 'position:fixed;z-index:9999;left:50%;top:14px;transform:translateX(-50%);width:min(440px,calc(100% - 24px));padding:12px 14px;border-radius:14px;background:#10231d;color:#fff;box-shadow:0 12px 30px #10231d44;display:flex;align-items:center;gap:10px;font:12px -apple-system,BlinkMacSystemFont,"PingFang HK","Microsoft JhengHei",sans-serif';
+    box.innerHTML = `<span style="flex:1;line-height:1.45">${message}</span><button id="tawayPushEnable" style="padding:8px 10px;border:0;border-radius:9px;background:#bbf05d;color:#10231d;font-weight:900;white-space:nowrap">${buttonText}</button><button id="tawayPushClose" aria-label="關閉" style="padding:4px 7px;border:0;background:transparent;color:#b8d0bd;font-size:16px">×</button>`;
+    document.body.appendChild(box);
+    box.querySelector('#tawayPushClose').onclick = removePrompt;
+    box.querySelector('#tawayPushEnable').onclick = async () => {
+      const button = box.querySelector('#tawayPushEnable');
+      button.disabled = true;
+      button.textContent = '設定中…';
+      try { await handler(); } finally { removePrompt(); }
+    };
+  }
+
+  async function syncStaff() {
+    const db = await getClient();
+    if (!db) return;
+    const { data } = await db.auth.getUser();
+    const user = data?.user;
+    if (!user || user.id === staffUserId) return;
+    staffUserId = user.id;
+    const { data: profile } = await db.from('staff_profiles').select('role,active').eq('user_id', user.id).maybeSingle();
+    if (!profile?.active || !['admin', 'courier'].includes(profile.role)) return;
+    staffRole = profile.role;
+    addPrompt(profile.role === 'admin' ? '開啟通知，客人落單時即時提醒你。' : '開啟通知，有可接配送時即時提醒你。', '開啟通知', () => subscribe(staffRole, user.id, null));
+  }
+
+  function showCustomerPrompt(orderId) {
+    if (!supported()) return;
+    addPrompt('開啟訂單通知，餐廳確認及配送狀態更新時提醒你。', '開啟訂單通知', () => subscribe('customer', null, orderId));
+  }
+
+  function watchCustomerOrders() {
+    const path = location.pathname;
+    if (!(path.endsWith('/index.html') || path.endsWith('/'))) return;
+    let latest;
+    try { latest = JSON.parse(localStorage.getItem('taway_orders_v1') || '[]')[0]; } catch (_) { return; }
+    if (!latest?.trackingToken || !latest.createdAt || Date.now() - Date.parse(latest.createdAt) > 10 * 60 * 1000) return;
+    const key = `taway_push_prompted_${latest.code}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    showCustomerPrompt(latest.trackingToken);
+  }
+
+  window.TAWAY_PUSH = { supported, register, subscribe, showCustomerPrompt, syncStaff };
+  register().catch(console.error);
+  setTimeout(watchCustomerOrders, 1200);
+  setInterval(watchCustomerOrders, 2000);
+  getClient().then(db => {
+    if (!db) return;
+    db.auth.onAuthStateChange(() => setTimeout(syncStaff, 0));
+    setTimeout(syncStaff, 500);
+  });
+})();
