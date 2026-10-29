@@ -1,19 +1,44 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import webpush from 'npm:web-push';
 
+const cleanBase64Secret = (name: string) => {
+  const raw = Deno.env.get(name) || '';
+  return raw
+    .replace(/\s+/g, '')
+    .replace(/^['"`]+|['"`]+$/g, '')
+    .replace(new RegExp(`^${name}=`, 'i'), '')
+    .replace(/=+$/g, '');
+};
+
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const configuredSecretKeys = Deno.env.get('SUPABASE_SECRET_KEYS');
 const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ||
   (configuredSecretKeys ? JSON.parse(configuredSecretKeys).default : '');
 const webhookSecret = Deno.env.get('PUSH_WEBHOOK_SECRET') || '';
-const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY') || '';
-const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY') || '';
-const vapidSubject = Deno.env.get('VAPID_SUBJECT') || 'mailto:admin@example.com';
+const vapidPublicKey = cleanBase64Secret('VAPID_PUBLIC_KEY');
+const vapidPrivateKey = cleanBase64Secret('VAPID_PRIVATE_KEY');
+const vapidSubject = (Deno.env.get('VAPID_SUBJECT') || 'mailto:admin@example.com')
+  .trim()
+  .replace(/^['"`]+|['"`]+$/g, '');
 const admin = createClient(supabaseUrl, serviceRoleKey);
 
-if (vapidPublicKey && vapidPrivateKey) {
-  webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+let vapidConfigured = false;
+try {
+  if (vapidPublicKey && vapidPrivateKey) {
+    webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+    vapidConfigured = true;
+  }
+} catch (error) {
+  console.error('VAPID configuration error:', error instanceof Error ? error.message : String(error));
 }
+
+console.info('VAPID configuration loaded', {
+  publicKeyConfigured: Boolean(vapidPublicKey),
+  publicKeyLength: vapidPublicKey.length,
+  privateKeyConfigured: Boolean(vapidPrivateKey),
+  privateKeyLength: vapidPrivateKey.length,
+  subjectConfigured: Boolean(vapidSubject)
+});
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -60,7 +85,7 @@ Deno.serve(async request => {
   if (!webhookSecret || request.headers.get('x-push-secret') !== webhookSecret) {
     return json({ error: 'Unauthorized' }, 401);
   }
-  if (!vapidPublicKey || !vapidPrivateKey) return json({ error: 'VAPID secrets are not configured' }, 500);
+  if (!vapidConfigured) return json({ error: 'VAPID secrets are not configured or invalid' }, 500);
 
   try {
     const payload = await request.json();
