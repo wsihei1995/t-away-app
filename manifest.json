@@ -1,0 +1,11 @@
+{
+  "name": "T-AWAY 天水圍人車隊",
+  "short_name": "T-AWAY",
+  "lang": "zh-Hant-HK",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f3",
+  "theme_color": "#10231d",
+  "description": "天水圍街坊外賣及配送平台"
+}
