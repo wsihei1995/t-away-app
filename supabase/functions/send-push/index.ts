@@ -2,7 +2,9 @@ import { createClient } from 'npm:@supabase/supabase-js@2';
 import webpush from 'npm:web-push';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const configuredSecretKeys = Deno.env.get('SUPABASE_SECRET_KEYS');
+const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ||
+  (configuredSecretKeys ? JSON.parse(configuredSecretKeys).default : '');
 const webhookSecret = Deno.env.get('PUSH_WEBHOOK_SECRET') || '';
 const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY') || '';
 const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY') || '';
@@ -72,10 +74,6 @@ Deno.serve(async request => {
     const assignedChanged = record.assigned_courier_id !== oldRecord.assigned_courier_id;
     if (!statusChanged && !assignedChanged) return json({ ok: true, sent: 0, reason: 'no notification change' });
 
-    const { data: items } = await admin.from('order_items')
-      .select('item_name,quantity')
-      .eq('order_id', orderId);
-    const itemText = (items || []).map(item => `${item.item_name} × ${item.quantity}`).join('、') || '餐點資料稍後更新';
     const code = record.public_code || orderId;
     const total = record.total ?? 0;
     let sent = 0;
